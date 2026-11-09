@@ -1,0 +1,3407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>活动明细 - 贵州省研学综合服务网</title>
+  <style>
+    :root {
+      --primary: #2f6bff;
+      --primary-hover: #1f5aec;
+      --primary-soft: #edf5ff;
+      --text: #303641;
+      --text-secondary: #59616d;
+      --muted: #9199a5;
+      --border: #e7ebf1;
+      --border-strong: #dde3eb;
+      --bg: #f3f6fa;
+      --label-bg: #ebf7ff;
+      --label-text: #2878c7;
+      --table-head: #f7f8fa;
+      --sidebar-width: 200px;
+      --header-height: 56px;
+      --tabs-height: 60px;
+      --action-height: 60px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body {
+      color: var(--text);
+      background: var(--bg);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+      font-size: 12px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button {
+      color: inherit;
+      font: inherit;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+
+    button:focus-visible {
+      outline: 2px solid rgba(47, 107, 255, 0.45);
+      outline-offset: 2px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    .icon {
+      width: 16px;
+      height: 16px;
+      flex: none;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.65;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: relative;
+      z-index: 30;
+      display: flex;
+      flex: 0 0 var(--sidebar-width);
+      flex-direction: column;
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: #f8fafc;
+      border-right: 1px solid #e7eaf0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      height: var(--header-height);
+      padding: 0 7px 0 6px;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: block;
+      width: 24px;
+      height: 24px;
+      flex: none;
+    }
+
+    .brand-name {
+      overflow: hidden;
+      color: #24384d;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.15px;
+      text-overflow: ellipsis;
+    }
+
+    .nav {
+      flex: 1;
+      min-height: 0;
+      padding-top: 10px;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 44px;
+      padding: 0 18px;
+      gap: 13px;
+      color: #4e5967;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .nav-item:hover,
+    .nav-subitem:hover {
+      background: rgba(47, 107, 255, 0.045);
+    }
+
+    .nav-item .icon {
+      width: 15px;
+      height: 15px;
+      color: #657181;
+      stroke-width: 1.55;
+    }
+
+    .nav-item-label {
+      flex: 1;
+      white-space: nowrap;
+    }
+
+    .nav-arrow {
+      width: 12px;
+      height: 12px;
+      color: #6e7885;
+      stroke-width: 1.8;
+      transition: transform 0.16s ease;
+    }
+
+    .nav-item[aria-expanded="true"] .nav-arrow {
+      transform: rotate(180deg);
+    }
+
+    .nav-sub {
+      padding: 0 0 3px;
+    }
+
+    .nav-subitem {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 44px;
+      padding: 0 18px 0 62px;
+      color: #4d5866;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .nav-subitem.active {
+      color: #26313d;
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 18px 18px 17px;
+      color: #8e97a3;
+      font-size: 11px;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .sidebar-footer .version {
+      color: #737d8a;
+      font-size: 12px;
+    }
+
+    /* Header */
+    .workspace {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-width: 0;
+      height: 100vh;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      flex: 0 0 var(--header-height);
+      align-items: center;
+      height: var(--header-height);
+      padding: 0 18px 0 4px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e7eaf0;
+    }
+
+    .hamburger {
+      display: inline-flex;
+      width: 44px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      color: #566373;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #4f5a67;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .breadcrumb .slash {
+      color: #9aa2ad;
+    }
+
+    .breadcrumb .current {
+      color: #34404d;
+    }
+
+    .topbar-spacer {
+      flex: 1;
+    }
+
+    .top-actions {
+      display: flex;
+      height: 100%;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .top-icon {
+      display: inline-flex;
+      width: 34px;
+      height: 34px;
+      align-items: center;
+      justify-content: center;
+      color: #316feb;
+    }
+
+    .portal-button {
+      display: inline-flex;
+      height: 30px;
+      align-items: center;
+      padding: 0 14px 0 11px;
+      gap: 7px;
+      color: #fff;
+      background: var(--primary);
+      border-radius: 3px;
+      font-size: 12px;
+      box-shadow: 0 2px 5px rgba(47, 107, 255, 0.18);
+    }
+
+    .portal-button:hover {
+      background: var(--primary-hover);
+    }
+
+    .portal-button .icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    .top-divider {
+      width: 1px;
+      height: 24px;
+      margin: 0 8px;
+      background: #e2e7ee;
+    }
+
+    .user-menu {
+      display: flex;
+      height: 42px;
+      align-items: center;
+      padding: 0 1px;
+      gap: 12px;
+      color: #34404d;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .user-menu .icon {
+      width: 12px;
+      height: 12px;
+      margin-left: 1px;
+      color: #626d7b;
+      stroke-width: 2;
+    }
+
+    .org-mark {
+      position: relative;
+      display: inline-block;
+      width: 28px;
+      height: 24px;
+      flex: none;
+    }
+
+    .org-mark::before {
+      position: absolute;
+      bottom: 2px;
+      left: 1px;
+      width: 26px;
+      height: 4px;
+      background: #f0a03b;
+      border-radius: 1px;
+      content: "";
+    }
+
+    .org-mark::after {
+      position: absolute;
+      top: 4px;
+      left: 3px;
+      width: 8px;
+      height: 17px;
+      background: linear-gradient(90deg, #1b6ee8, #48a4ff);
+      border-radius: 1px 1px 0 0;
+      box-shadow:
+        10px 3px 0 #55b980,
+        18px -2px 0 #f2b245;
+      content: "";
+    }
+
+    /* Page tabs */
+    .page-tabs {
+      display: flex;
+      flex: 0 0 var(--tabs-height);
+      height: var(--tabs-height);
+      align-items: center;
+      padding: 0 17px;
+      gap: 4px;
+      overflow: hidden;
+      background: #fff;
+      border-bottom: 1px solid #e7eaf0;
+    }
+
+    .page-tab {
+      display: flex;
+      height: var(--tabs-height);
+      align-items: center;
+      padding: 0 8px;
+      gap: 11px;
+      color: #53606f;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .page-tab.active {
+      color: #37424f;
+    }
+
+    .tab-close {
+      display: inline-flex;
+      width: 18px;
+      height: 18px;
+      align-items: center;
+      justify-content: center;
+      color: #77818e;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .tab-close:hover {
+      color: #44505e;
+      background: #f0f3f7;
+      border-radius: 50%;
+    }
+
+    /* Scrollable main */
+    .main-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: var(--bg);
+      scrollbar-color: #c6ced8 transparent;
+      scrollbar-width: thin;
+    }
+
+    .main-scroll::-webkit-scrollbar {
+      width: 7px;
+    }
+
+    .main-scroll::-webkit-scrollbar-thumb {
+      background: #c8cfd8;
+      border-radius: 8px;
+    }
+
+    .activity-tabbar {
+      width: 100%;
+      background: #fff;
+      border-bottom: 1px solid #e8ecf2;
+    }
+
+    .activity-tabbar-inner {
+      width: 100%;
+      max-width: 1400px;
+      height: 57px;
+      margin: 0 auto;
+      padding: 0 27px;
+    }
+
+    .activity-tab {
+      position: relative;
+      display: inline-flex;
+      height: 57px;
+      align-items: center;
+      padding: 0 1px;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .activity-tab::after {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 1px 1px 0 0;
+      content: "";
+    }
+
+    .content-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 36px 36px 27px;
+      grid-template-columns: minmax(0, 1fr) 266px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .content-column {
+      min-width: 0;
+    }
+
+    /* Cards */
+    .card {
+      margin: 0 0 22px;
+      padding: 20px 15px 24px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(36, 55, 79, 0.025);
+    }
+
+    .card:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      margin: 0 0 12px;
+      gap: 10px;
+      color: #303641;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .section-title::before {
+      display: block;
+      width: 3px;
+      height: 16px;
+      flex: none;
+      background: #2e6bff;
+      border-radius: 2px;
+      content: "";
+    }
+
+    .section-title.compact {
+      margin-bottom: 14px;
+    }
+
+    /* Information grid tables */
+    .info-table {
+      width: calc(100% - 36px);
+      margin-right: 18px;
+      margin-left: 18px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid #e5eaf1;
+    }
+
+    .info-table th,
+    .info-table td {
+      height: 43px;
+      padding: 4px 10px;
+      border: 1px solid #e5eaf1;
+      line-height: 1.45;
+      vertical-align: middle;
+    }
+
+    .info-table th {
+      width: 16.666%;
+      color: var(--label-text);
+      background: var(--label-bg);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .info-table td {
+      color: #59616d;
+      background: #fff;
+      font-size: 12px;
+      text-align: left;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    .info-table th.empty,
+    .info-table td.empty {
+      background: #fff;
+    }
+
+    .label-note {
+      margin-left: 2px;
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .fee-value {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .text-link {
+      padding: 0;
+      color: var(--primary);
+      font-size: 12px;
+    }
+
+    .text-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Plan section */
+    .subsection-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 11px;
+      gap: 16px;
+    }
+
+    .subsection-title {
+      margin: 0;
+      color: #404957;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 22px;
+    }
+
+    .outline-button {
+      display: inline-flex;
+      height: 30px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 13px;
+      color: #4f7fe8;
+      background: linear-gradient(180deg, #fff 0%, #f9fbff 100%);
+      border: 1px solid #cbdaf8;
+      border-radius: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .outline-button:hover {
+      border-color: #99b8f6;
+      background: #f4f8ff;
+    }
+
+    .section-divider {
+      margin: 23px 18px 19px;
+      border: 0;
+      border-top: 1px dashed #e1e6ed;
+    }
+
+    .related-course-title {
+      margin: 0 0 12px;
+      color: #4a5360;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Embedded base-side plan and course lists */
+    .embedded-lists {
+      margin-top: 4px;
+    }
+
+    .embedded-list + .embedded-list {
+      margin-top: 27px;
+      padding-top: 24px;
+      border-top: 1px dashed #e1e6ed;
+    }
+
+    .embedded-list-title {
+      display: flex;
+      align-items: center;
+      margin: 0 0 13px;
+      gap: 9px;
+      color: #3f4855;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .embedded-list-title::before {
+      width: 3px;
+      height: 14px;
+      flex: none;
+      background: #2e6bff;
+      border-radius: 2px;
+      content: "";
+    }
+
+    .embedded-filter {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 13px;
+      padding: 11px 12px;
+      gap: 10px;
+      background: #fbfcfe;
+      border: 1px solid #e8ecf2;
+      border-radius: 3px;
+    }
+
+    .filter-field {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .filter-label {
+      flex: none;
+      color: #4e5967;
+      font-size: 12px;
+      line-height: 30px;
+    }
+
+    .filter-input,
+    .filter-select {
+      height: 30px;
+      padding: 0 9px;
+      color: #5f6875;
+      background-color: #fff;
+      border: 1px solid #dcdfe6;
+      border-radius: 3px;
+      outline: none;
+      font-family: inherit;
+      font-size: 12px;
+      transition: border-color 0.15s ease;
+    }
+
+    .filter-input::placeholder {
+      color: #a8abb2;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      border-color: #8eb3ff;
+      box-shadow: 0 0 0 2px rgba(47, 107, 255, 0.08);
+    }
+
+    .filter-input-wide,
+    .filter-input-course {
+      width: 160px;
+    }
+
+    .filter-select {
+      padding-right: 25px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='m1 1 4 4 4-4' fill='none' stroke='%23a8abb2' stroke-width='1.2'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+    }
+
+    .filter-select-stage {
+      width: 126px;
+    }
+
+    .filter-select-type {
+      width: 134px;
+    }
+
+    .filter-select-status,
+    .filter-select-course-type,
+    .filter-select-course-status {
+      width: 122px;
+    }
+
+    .filter-input-course {
+      width: 170px;
+    }
+
+    .filter-button {
+      display: inline-flex;
+      height: 30px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 11px;
+      gap: 4px;
+      color: #5b6471;
+      background: #fff;
+      border: 1px solid #dcdfe6;
+      border-radius: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .filter-button .icon {
+      width: 13px;
+      height: 13px;
+    }
+
+    .filter-button:hover {
+      color: var(--primary);
+      border-color: #a9c4ff;
+    }
+
+    .filter-button-primary {
+      color: #fff;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .filter-button-primary:hover {
+      color: #fff;
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .list-toolbar {
+      display: flex;
+      min-height: 32px;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 12px;
+    }
+
+    .toolbar-actions,
+    .toolbar-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-tools {
+      margin-left: auto;
+    }
+
+    .primary-button.mini-primary {
+      height: 30px;
+      padding: 0 13px;
+      gap: 4px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+
+    .primary-button.mini-primary .icon {
+      width: 13px;
+      height: 13px;
+    }
+
+    .round-tool {
+      display: inline-flex;
+      width: 30px;
+      height: 30px;
+      align-items: center;
+      justify-content: center;
+      color: #6b7480;
+      background: #fff;
+      border: 1px solid #dfe3e8;
+      border-radius: 50%;
+    }
+
+    .round-tool:hover {
+      color: var(--primary);
+      border-color: #aec7ff;
+      background: #f7faff;
+    }
+
+    .round-tool .icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    .embedded-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 2px;
+      scrollbar-width: thin;
+    }
+
+    .embedded-table {
+      width: 100%;
+      min-width: 860px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: #fff;
+    }
+
+    .embedded-table.course-list-table {
+      min-width: 820px;
+    }
+
+    .embedded-table th {
+      height: 42px;
+      padding: 6px 4px;
+      color: #4e5967;
+      background: #f7f8fa;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .embedded-table td {
+      height: 48px;
+      padding: 6px 5px;
+      color: #59616d;
+      border-bottom: 1px solid #edf0f4;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .embedded-table tbody tr:hover td {
+      background: #fafcff;
+    }
+
+    .embedded-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .embedded-table .cell-check {
+      padding-right: 2px;
+      padding-left: 8px;
+      text-align: center;
+    }
+
+    .cell-check input {
+      width: 13px;
+      height: 13px;
+      margin: 0;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .cell-ellipsis {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .cell-nowrap {
+      white-space: nowrap;
+    }
+
+    .host-cell {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .host-cell .cell-ellipsis {
+      display: block;
+      min-width: 0;
+      flex: 1;
+      text-align: left;
+    }
+
+    .mini-tag {
+      display: inline-flex;
+      height: 20px;
+      flex: none;
+      align-items: center;
+      padding: 0 5px;
+      color: #8a929e;
+      background: #f5f7fa;
+      border: 1px solid #e8ecf1;
+      border-radius: 2px;
+      font-size: 11px;
+      line-height: 18px;
+    }
+
+    .type-tag {
+      display: inline-flex;
+      height: 21px;
+      align-items: center;
+      padding: 0 6px;
+      color: #4c74e5;
+      background: #f5f8ff;
+      border: 1px solid #e3ebff;
+      border-radius: 2px;
+      font-size: 11.5px;
+      line-height: 19px;
+      white-space: nowrap;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      height: 21px;
+      align-items: center;
+      padding: 0 7px;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      font-size: 11.5px;
+      line-height: 19px;
+      white-space: nowrap;
+    }
+
+    .status-online {
+      color: #62b96a;
+      background: #f3fff3;
+      border-color: #dff1e1;
+    }
+
+    .status-approved {
+      color: #3f7ff1;
+      background: #f4f8ff;
+      border-color: #dce7ff;
+    }
+
+    .row-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .table-link {
+      padding: 0;
+      color: #2f6bff;
+      font-size: 11.5px;
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    .table-link:hover {
+      text-decoration: underline;
+    }
+
+    .table-link-warning {
+      color: #e7a33e;
+    }
+
+    .course-list-table .course-long-name {
+      padding-right: 12px;
+      padding-left: 12px;
+      line-height: 19px;
+      text-align: center;
+      white-space: normal;
+    }
+
+    .course-list-table .course-stage-cell {
+      line-height: 18px;
+      white-space: normal;
+    }
+
+    .course-list-table .course-tall-row td {
+      height: 64px;
+    }
+
+    /* Standard tables */
+    .data-table {
+      width: calc(100% - 36px);
+      margin-right: 18px;
+      margin-left: 18px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid #e7ebf1;
+    }
+
+    .data-table th,
+    .data-table td {
+      border: 1px solid #e7ebf1;
+      font-size: 12px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .data-table th {
+      height: 40px;
+      padding: 7px 10px;
+      color: #4f5965;
+      background: var(--table-head);
+      font-weight: 500;
+    }
+
+    .data-table td {
+      height: 43px;
+      padding: 7px 10px;
+      color: #59616d;
+      background: #fff;
+    }
+
+    .course-table td {
+      height: 66px;
+    }
+
+    .course-table .course-name,
+    .course-table .course-intro {
+      text-align: left;
+    }
+
+    .course-table .course-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .course-table .course-intro {
+      overflow: hidden;
+      color: #6a727e;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .course-table .course-fee {
+      color: #4b5563;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* Compact tabs */
+    .mini-tabs {
+      display: flex;
+      align-items: flex-end;
+      margin: 0 0 14px;
+      padding: 0;
+      gap: 30px;
+      overflow-x: auto;
+      border-bottom: 1px solid #ebeff4;
+      scrollbar-width: none;
+    }
+
+    .mini-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mini-tab {
+      position: relative;
+      flex: none;
+      padding: 0 1px 10px;
+      color: #4e5967;
+      font-size: 12px;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .mini-tab.active {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .mini-tab.active::after {
+      position: absolute;
+      right: 0;
+      bottom: -1px;
+      left: 0;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 1px;
+      content: "";
+    }
+
+    .mini-tab:hover {
+      color: var(--primary);
+    }
+
+    .soft-empty {
+      display: flex;
+      min-height: 120px;
+      align-items: center;
+      justify-content: center;
+      color: #9aa2ae;
+      font-size: 12px;
+    }
+
+    /* Activity materials */
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      margin-top: 2px;
+      gap: 22px;
+    }
+
+    .resource-group h5 {
+      margin: 0 0 10px;
+      color: #4d5663;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .asset-thumb {
+      position: relative;
+      display: block;
+      width: 54px;
+      height: 54px;
+      padding: 0;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #dce2ea;
+      border-radius: 2px;
+    }
+
+    .asset-preview {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: rgba(38, 78, 132, 0.58);
+      font-size: 11px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .asset-thumb:hover .asset-preview,
+    .asset-thumb:focus-visible .asset-preview {
+      opacity: 1;
+    }
+
+    /* Empty activity data */
+    .empty-panel {
+      display: flex;
+      min-height: 338px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 32px 0 22px;
+    }
+
+    .empty-illustration {
+      width: 112px;
+      height: 96px;
+      color: #d9e0e9;
+    }
+
+    .empty-text {
+      margin: 14px 0 18px;
+      color: #959daa;
+      font-size: 13px;
+    }
+
+    .primary-button {
+      display: inline-flex;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      color: #fff;
+      background: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+      box-shadow: 0 1px 2px rgba(47, 107, 255, 0.12);
+    }
+
+    .primary-button:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    /* Travel information */
+    .single-tab {
+      margin-bottom: 10px;
+    }
+
+    .vehicle-table th,
+    .vehicle-table td {
+      padding-right: 6px;
+      padding-left: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .vehicle-table td {
+      height: 40px;
+    }
+
+    .helper-text {
+      margin: 12px 18px 0;
+      color: #9aa2ae;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    .detail-block {
+      margin-top: 25px;
+    }
+
+    .detail-block .section-title {
+      margin-bottom: 10px;
+    }
+
+    .video-tabs {
+      margin-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .video-empty {
+      margin: 13px 18px 0;
+      color: #9aa2ae;
+      font-size: 12px;
+    }
+
+    .driver-block {
+      margin-top: 28px;
+    }
+
+    .verify-note {
+      margin: 30px 18px 0;
+      color: #727b88;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    /* Progress panel */
+    .progress-card {
+      padding: 18px 17px 22px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(36, 55, 79, 0.025);
+    }
+
+    .progress-card .section-title {
+      margin-bottom: 22px;
+    }
+
+    .timeline {
+      margin: 0;
+      padding: 0 0 0 31px;
+      list-style: none;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 0 0 24px 20px;
+    }
+
+    .timeline-item:last-child {
+      padding-bottom: 1px;
+    }
+
+    .timeline-item::before {
+      position: absolute;
+      top: 13px;
+      bottom: -1px;
+      left: -1px;
+      width: 1px;
+      background: #dce4f4;
+      content: "";
+    }
+
+    .timeline-item:last-child::before {
+      display: none;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      top: 2px;
+      left: -10px;
+      display: flex;
+      width: 18px;
+      height: 18px;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: #2e6bea;
+      border: 3px solid #eef3ff;
+      border-radius: 50%;
+      box-sizing: content-box;
+    }
+
+    .timeline-dot svg {
+      width: 9px;
+      height: 9px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2.2;
+    }
+
+    .timeline-title {
+      margin: 0 0 4px;
+      color: #30363f;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .timeline-meta {
+      margin: 0;
+      color: #535c69;
+      font-size: 12px;
+      line-height: 19px;
+      overflow-wrap: anywhere;
+    }
+
+    /* Bottom action bar */
+    .action-bar {
+      position: relative;
+      z-index: 25;
+      display: flex;
+      flex: 0 0 var(--action-height);
+      height: var(--action-height);
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #fff;
+      border-top: 1px solid #e8ebf0;
+      box-shadow: 0 -2px 10px rgba(44, 61, 83, 0.035);
+    }
+
+    .action-bar .primary-button {
+      min-width: 64px;
+      height: 33px;
+      padding: 0 18px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      z-index: 100;
+      top: 80px;
+      left: 50%;
+      padding: 10px 18px;
+      color: #fff;
+      background: rgba(28, 36, 48, 0.86);
+      border-radius: 4px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -8px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 1180px) {
+      .content-grid {
+        grid-template-columns: minmax(0, 1fr) 248px;
+        gap: 22px;
+        padding-right: 24px;
+        padding-left: 20px;
+      }
+
+      .activity-tabbar-inner {
+        padding-right: 20px;
+        padding-left: 20px;
+      }
+
+      .card {
+        padding-right: 22px;
+        padding-left: 22px;
+      }
+    }
+
+    @media (max-width: 960px) {
+      :root {
+        --sidebar-width: 64px;
+      }
+
+      .brand {
+        justify-content: center;
+        padding: 0;
+      }
+
+      .brand-name,
+      .nav-item-label,
+      .nav-arrow,
+      .sidebar-footer {
+        display: none;
+      }
+
+      .nav-item {
+        justify-content: center;
+        padding: 0;
+      }
+
+      .nav-sub {
+        display: none;
+      }
+
+      .content-grid {
+        display: block;
+      }
+
+      .progress-card {
+        margin-top: 20px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .breadcrumb {
+        font-size: 12px;
+      }
+
+      .top-divider,
+      .top-icon,
+      .page-tab:not(.active) {
+        display: none;
+      }
+
+      .portal-button {
+        padding-right: 10px;
+        padding-left: 8px;
+      }
+
+      .user-menu {
+        gap: 5px;
+      }
+
+      .content-grid {
+        padding: 16px 12px 28px;
+      }
+
+      .activity-tabbar-inner {
+        padding: 0 12px;
+      }
+
+      .card {
+        padding: 20px 14px 22px;
+        overflow-x: auto;
+      }
+
+      .info-table,
+      .data-table {
+        min-width: 680px;
+      }
+    }
+
+    /* Base-side detail pages */
+    .base-app {
+      position: fixed;
+      z-index: 60;
+      inset: 0;
+      display: flex;
+      min-width: 1100px;
+      background: #f0f2f5;
+    }
+
+    .base-app[hidden],
+    .base-detail[hidden] {
+      display: none;
+    }
+
+    .base-sidebar {
+      display: flex;
+      width: 64px;
+      flex: 0 0 64px;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+      border-right: 1px solid #e6e8eb;
+    }
+
+    .base-logo {
+      display: flex;
+      width: 100%;
+      height: 56px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .base-logo svg {
+      width: 25px;
+      height: 25px;
+    }
+
+    .base-nav {
+      display: flex;
+      width: 100%;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 0;
+      gap: 3px;
+    }
+
+    .base-nav-item {
+      position: relative;
+      display: flex;
+      width: 46px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+      color: #303133;
+      border-radius: 4px;
+    }
+
+    .base-nav-item:hover {
+      color: #165dff;
+      background: #f2f7ff;
+    }
+
+    .base-nav-item.is-current {
+      color: #165dff;
+      background: #edf4ff;
+    }
+
+    .base-nav-item .icon {
+      width: 17px;
+      height: 17px;
+      stroke-width: 1.6;
+    }
+
+    .base-nav-item .base-nav-caret {
+      position: absolute;
+      right: 3px;
+      bottom: 4px;
+      width: 7px;
+      height: 7px;
+      stroke-width: 2;
+    }
+
+    .base-side-version {
+      padding: 8px 0 10px;
+      color: #c0c4cc;
+      font-size: 9px;
+      line-height: 14px;
+      text-align: center;
+    }
+
+    .base-workspace {
+      display: flex;
+      min-width: 0;
+      flex: 1;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .base-topbar {
+      display: flex;
+      height: 56px;
+      flex: 0 0 56px;
+      align-items: center;
+      padding: 0 18px 0 2px;
+      background: #fff;
+      border-bottom: 1px solid #e8eaed;
+    }
+
+    .base-hamburger {
+      display: inline-flex;
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
+      color: #303133;
+    }
+
+    .base-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #606266;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .base-breadcrumb a:hover {
+      color: #165dff;
+    }
+
+    .base-breadcrumb .base-slash {
+      color: #c0c4cc;
+    }
+
+    .base-breadcrumb .base-crumb-current {
+      color: #303133;
+    }
+
+    .base-top-spacer {
+      flex: 1;
+    }
+
+    .base-top-actions {
+      display: flex;
+      height: 100%;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .base-top-icon {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      color: #165dff;
+    }
+
+    .base-portal {
+      display: inline-flex;
+      height: 30px;
+      align-items: center;
+      padding: 0 12px;
+      gap: 6px;
+      color: #fff;
+      background: #165dff;
+      border-radius: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .base-portal .icon {
+      width: 13px;
+      height: 13px;
+    }
+
+    .base-top-bar {
+      width: 1px;
+      height: 24px;
+      margin: 0 9px;
+      background: #e6e8eb;
+    }
+
+    .base-current-unit {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #303133;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .base-current-unit span {
+      color: #909399;
+    }
+
+    .base-user {
+      display: flex;
+      height: 42px;
+      align-items: center;
+      gap: 9px;
+      color: #303133;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .base-user .icon {
+      width: 11px;
+      height: 11px;
+      color: #909399;
+      stroke-width: 2;
+    }
+
+    .base-avatar {
+      position: relative;
+      display: inline-block;
+      width: 30px;
+      height: 25px;
+      flex: none;
+    }
+
+    .base-avatar::before {
+      position: absolute;
+      bottom: 1px;
+      left: 1px;
+      width: 28px;
+      height: 4px;
+      background: #f5a623;
+      border-radius: 1px;
+      content: "";
+    }
+
+    .base-avatar::after {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 8px;
+      height: 18px;
+      background: linear-gradient(90deg, #165dff, #54a0ff);
+      border-radius: 1px 1px 0 0;
+      box-shadow:
+        9px 3px 0 #52c41a,
+        17px -1px 0 #f5a623;
+      content: "";
+    }
+
+    .base-pdf-button {
+      display: inline-flex;
+      height: 30px;
+      align-items: center;
+      padding: 0 11px;
+      margin-left: 4px;
+      color: #165dff;
+      background: #fff;
+      border: 1px solid #adc6ff;
+      border-radius: 3px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .base-pdf-button:hover {
+      background: #f2f7ff;
+    }
+
+    .base-page-tabs {
+      display: flex;
+      height: 42px;
+      flex: 0 0 42px;
+      align-items: center;
+      padding: 0 16px;
+      gap: 4px;
+      overflow: hidden;
+      background: #fff;
+      border-bottom: 1px solid #e8eaed;
+    }
+
+    .base-page-tab {
+      display: flex;
+      height: 42px;
+      align-items: center;
+      padding: 0 8px;
+      gap: 8px;
+      color: #606266;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .base-page-tab.active {
+      color: #303133;
+    }
+
+    .base-tab-close {
+      display: inline-flex;
+      width: 15px;
+      height: 15px;
+      align-items: center;
+      justify-content: center;
+      color: #909399;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .base-main {
+      flex: 1;
+      min-height: 0;
+      padding: 20px 24px 28px;
+      overflow: auto;
+      background: #f0f2f5;
+      scrollbar-color: #c7ccd3 transparent;
+      scrollbar-width: thin;
+    }
+
+    .base-detail {
+      width: 100%;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .base-back-row {
+      display: flex;
+      align-items: center;
+      margin: 0 0 12px;
+      gap: 8px;
+    }
+
+    .base-back-button {
+      display: inline-flex;
+      height: 28px;
+      align-items: center;
+      padding: 0 10px;
+      gap: 5px;
+      color: #606266;
+      background: #fff;
+      border: 1px solid #dcdfe6;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+
+    .base-back-button:hover {
+      color: #165dff;
+      border-color: #adc6ff;
+    }
+
+    .base-back-button .icon {
+      width: 12px;
+      height: 12px;
+    }
+
+    .base-card {
+      margin: 0 0 16px;
+      padding: 15px 20px 20px;
+      background: #fff;
+      border: 1px solid #e4e7ed;
+      border-radius: 4px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .base-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .base-section-title {
+      position: relative;
+      margin: 0;
+      padding: 0 0 12px 10px;
+      color: #303133;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+    }
+
+    .base-section-title::before {
+      position: absolute;
+      top: 4px;
+      left: 0;
+      width: 3px;
+      height: 16px;
+      background: #165dff;
+      border-radius: 1px;
+      content: "";
+    }
+
+    .base-info-table {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e4e7ed;
+    }
+
+    .base-info-row {
+      display: grid;
+      grid-template-columns: 0.75fr 1fr 0.75fr 1fr 0.75fr 1fr;
+      border-bottom: 1px solid #e4e7ed;
+    }
+
+    .base-info-row:last-child {
+      border-bottom: 0;
+    }
+
+    .base-info-cell {
+      display: flex;
+      min-height: 45px;
+      align-items: center;
+      padding: 10px 12px;
+      overflow-wrap: anywhere;
+      border-right: 1px solid #e4e7ed;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .base-info-cell:last-child {
+      border-right: 0;
+    }
+
+    .base-info-cell.label-cell {
+      justify-content: center;
+      color: #165dff;
+      background: #f2f9fc;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .base-info-cell.value-cell {
+      color: #222;
+    }
+
+    .base-info-cell.value-cell .highlight,
+    .base-info-cell .highlight {
+      color: #165dff;
+      font-weight: 600;
+    }
+
+    .base-info-cell.empty {
+      background: #fff;
+    }
+
+    .base-legacy-text {
+      padding: 16px 0;
+      color: #303133;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .base-rich {
+      padding: 16px 0;
+      color: #303133;
+      font-size: 16px;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .base-rich p {
+      margin: 16px 0;
+    }
+
+    .base-rich h2 {
+      margin: 20px 0;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .base-rich h3 {
+      margin: 19px 0;
+      font-size: 18.7px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .base-rich ul {
+      margin: 16px 0;
+      padding-left: 40px;
+    }
+
+    .base-rich li {
+      margin: 0;
+    }
+
+    .base-rich strong {
+      font-weight: 700;
+    }
+
+    .base-course-heading {
+      margin: 0 0 12px;
+      color: #303133;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 22px;
+    }
+
+    .base-gallery {
+      display: grid;
+      padding: 16px 0;
+      grid-template-columns: repeat(auto-fill, 200px);
+      gap: 16px;
+    }
+
+    .base-gallery-item {
+      display: block;
+      width: 200px;
+      height: 150px;
+      overflow: hidden;
+      background: #f5f7fa;
+      border: 1px solid #ebeef5;
+      border-radius: 2px;
+    }
+
+    .base-gallery-item img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .base-course-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 16px 0;
+      gap: 16px;
+    }
+
+    .base-course-gallery .base-gallery-item {
+      width: 200px;
+      height: 150px;
+    }
+
+    .base-content-image {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      margin: 16px 0 0;
+      border-radius: 2px;
+    }
+
+    .base-content-image.narrow {
+      width: auto;
+      max-width: 720px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .base-empty {
+      display: flex;
+      min-height: 180px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px 0;
+      gap: 14px;
+      color: #909399;
+      font-size: 13px;
+    }
+
+    .base-empty svg {
+      width: 110px;
+      height: 96px;
+      color: #e4e9f0;
+    }
+
+    .base-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      color: #606266;
+      border: 1px solid #ebeef5;
+      font-size: 13px;
+    }
+
+    .base-table th,
+    .base-table td {
+      padding: 8px 10px;
+      border: 1px solid #ebeef5;
+      line-height: 1.6;
+      text-align: left;
+      vertical-align: middle;
+      overflow-wrap: anywhere;
+    }
+
+    .base-table th {
+      height: 40px;
+      color: #515a6e;
+      background: #f8f8f9;
+      font-weight: 600;
+    }
+
+    .base-table td {
+      height: 36px;
+      background: #fff;
+    }
+
+    .base-schedule-day {
+      margin: 2px 0 0;
+      padding: 8px 12px;
+      color: #303133;
+      background: #f5f7fa;
+      border: 1px solid #ebeef5;
+      border-bottom: 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .base-schedule-day + .base-table {
+      border-top: 0;
+    }
+
+    .base-video-card {
+      width: 260px;
+      padding: 8px;
+      background: #fff;
+      border: 1px solid #ebeef5;
+      border-radius: 4px;
+    }
+
+    .base-video-player {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 146px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.08), transparent 42%),
+        #111;
+      border-radius: 2px;
+    }
+
+    .base-video-player::before {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-top: 13px solid transparent;
+      border-bottom: 13px solid transparent;
+      border-left: 20px solid rgba(255, 255, 255, 0.9);
+      content: "";
+      transform: translate(-38%, -50%);
+    }
+
+    .base-video-player::after {
+      position: absolute;
+      right: 9px;
+      bottom: 12px;
+      left: 9px;
+      height: 3px;
+      background: linear-gradient(90deg, #165dff 0 16%, rgba(255, 255, 255, 0.28) 16% 100%);
+      border-radius: 2px;
+      content: "";
+    }
+
+    .base-video-label {
+      padding: 9px 2px 2px;
+      color: #606266;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .base-detail-note {
+      margin: 18px 0 0;
+      color: #909399;
+      font-size: 12px;
+    }
+
+    @media (max-width: 1280px) {
+      .base-main {
+        padding: 16px 18px 24px;
+      }
+
+      .base-info-cell.label-cell {
+        font-size: 13px;
+      }
+
+      .base-current-unit {
+        display: none;
+      }
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 12mm;
+      }
+
+      html,
+      body {
+        width: auto;
+        height: auto;
+        overflow: visible;
+        background: #fff;
+      }
+
+      .app,
+      .toast,
+      .base-sidebar,
+      .base-topbar,
+      .base-page-tabs,
+      .base-back-row,
+      .base-pdf-button {
+        display: none !important;
+      }
+
+      .base-app {
+        position: static;
+        display: block !important;
+        min-width: 0;
+        height: auto;
+        background: #fff;
+      }
+
+      .base-workspace,
+      .base-main {
+        display: block;
+        height: auto;
+        padding: 0;
+        overflow: visible;
+        background: #fff;
+      }
+
+      .base-detail {
+        max-width: none;
+      }
+
+      .base-card {
+        break-inside: avoid;
+        margin-bottom: 10px;
+        padding: 10px 12px 12px;
+        box-shadow: none;
+      }
+
+      .base-info-cell.label-cell {
+        font-size: 12px;
+      }
+
+      .base-legacy-text,
+      .base-rich {
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .base-rich h2 {
+        font-size: 19px;
+      }
+
+      .base-rich h3 {
+        font-size: 15px;
+      }
+
+      .base-gallery {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .base-gallery-item {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+    <defs>
+      <symbol id="i-home" viewBox="0 0 24 24">
+        <path d="M3.5 10.6 12 3.8l8.5 6.8v9a1.2 1.2 0 0 1-1.2 1.2H4.7a1.2 1.2 0 0 1-1.2-1.2z"/>
+        <path d="M9 20.8v-6.3h6v6.3"/>
+      </symbol>
+      <symbol id="i-screen" viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="13" rx="1.2"/>
+        <path d="M8 21h8M12 17v4"/>
+      </symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24">
+        <path d="M12 2.9 20 6v5.8c0 4.7-3.2 7.8-8 9.3-4.8-1.5-8-4.6-8-9.3V6z"/>
+        <path d="m8.5 11.7 2.2 2.2 4.8-5"/>
+      </symbol>
+      <symbol id="i-star" viewBox="0 0 24 24">
+        <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1-4.4-4.3 6.1-.9z"/>
+        <path d="M8.3 11.4h7.4M8.8 14.8h6.4"/>
+      </symbol>
+      <symbol id="i-building" viewBox="0 0 24 24">
+        <path d="M4 21V8l8-5 8 5v13"/>
+        <path d="M3 21h18M8 10h2m4 0h2m-8 4h2m4 0h2m-8 4h2m4 0h2"/>
+      </symbol>
+      <symbol id="i-news" viewBox="0 0 24 24">
+        <path d="M4 5h13v15H5.8A1.8 1.8 0 0 1 4 18.2z"/>
+        <path d="M17 8h3v10.2a1.8 1.8 0 0 1-1.8 1.8H16"/>
+        <path d="M7.5 9h6M7.5 12.5h6M7.5 16h4"/>
+      </symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24">
+        <path d="M4 3v18h17"/>
+        <path d="m7 16 4-4 3 2 5-6"/>
+      </symbol>
+      <symbol id="i-search-screen" viewBox="0 0 24 24">
+        <rect x="2.8" y="4.2" width="18.4" height="12.2" rx="1.3"/>
+        <path d="M8 20.5h8M12 16.4v4.1"/>
+        <circle cx="10.4" cy="10.2" r="2.2"/>
+        <path d="m12 11.8 1.8 1.8"/>
+      </symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24">
+        <path d="m7 9.5 5 5 5-5"/>
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24">
+        <path d="M4 7h16M4 12h16M4 17h16"/>
+      </symbol>
+      <symbol id="i-expand" viewBox="0 0 24 24">
+        <path d="M9 4H4v5M15 4h5v5M9 20H4v-5M20 15v5h-5"/>
+        <path d="m4 9 5-5m6 0 5 5M4 15l5 5m6 0 5-5"/>
+      </symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24">
+        <path d="M4 6h10M18 6h2M4 12h3M11 12h9M4 18h8M16 18h4"/>
+        <circle cx="16" cy="6" r="2"/>
+        <circle cx="9" cy="12" r="2"/>
+        <circle cx="14" cy="18" r="2"/>
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 24 24">
+        <path d="M8 5.5v13l10-6.5z"/>
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="10.7" cy="10.7" r="6.2"/>
+        <path d="m15.3 15.3 4.4 4.4"/>
+      </symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24">
+        <path d="M20 7v5h-5M4 17v-5h5"/>
+        <path d="M6.7 8.3A7 7 0 0 1 19.8 12M4.2 12a7 7 0 0 0 13.1 3.7"/>
+      </symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14"/>
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 16 16">
+        <path d="m3 8 3 3 7-7"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="app">
+    <aside class="sidebar" aria-label="主导航">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <defs>
+            <linearGradient id="logoGrad" x1="4" y1="8" x2="28" y2="26" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#38b4ee"/>
+              <stop offset="0.48" stop-color="#207de8"/>
+              <stop offset="1" stop-color="#36c48b"/>
+            </linearGradient>
+          </defs>
+          <circle cx="16" cy="16" r="14" fill="url(#logoGrad)" opacity="0.13"/>
+          <path d="M4.5 18.6c3.2-7.1 8-10.2 12.6-9.2 4.1.9 6.4 3.9 8.2 7.9" fill="none" stroke="url(#logoGrad)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M6.8 23c4.1-7.7 9.4-10.1 15.8-7.2" fill="none" stroke="#34a2eb" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M11 27.2c2.7-5 6.3-6.2 10.6-3.8" fill="none" stroke="#52c38a" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="17.1" cy="9.4" r="2.1" fill="#2791e9"/>
+        </svg>
+        <span class="brand-name">贵州省研学综合服务网</span>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item" type="button">
+          <svg class="icon"><use href="#i-home"></use></svg>
+          <span class="nav-item-label">工作台</span>
+        </button>
+        <button class="nav-item" type="button" aria-expanded="false">
+          <svg class="icon"><use href="#i-screen"></use></svg>
+          <span class="nav-item-label">大屏</span>
+          <svg class="icon nav-arrow"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="nav-item" type="button" aria-expanded="true">
+          <svg class="icon"><use href="#i-shield"></use></svg>
+          <span class="nav-item-label">审核管理</span>
+          <svg class="icon nav-arrow"><use href="#i-chevron"></use></svg>
+        </button>
+        <div class="nav-sub">
+          <button class="nav-subitem" type="button">基地审核</button>
+          <button class="nav-subitem" type="button">课程审核</button>
+          <button class="nav-subitem" type="button">教育实践计划审核</button>
+          <button class="nav-subitem active" type="button">研学出行</button>
+        </div>
+        <button class="nav-item" type="button" aria-expanded="false">
+          <svg class="icon"><use href="#i-star"></use></svg>
+          <span class="nav-item-label">评价管理</span>
+          <svg class="icon nav-arrow"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="nav-item" type="button">
+          <svg class="icon"><use href="#i-building"></use></svg>
+          <span class="nav-item-label">机构管理</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg class="icon"><use href="#i-building"></use></svg>
+          <span class="nav-item-label">学校管理</span>
+        </button>
+        <button class="nav-item" type="button">
+          <svg class="icon"><use href="#i-building"></use></svg>
+          <span class="nav-item-label">基地管理</span>
+        </button>
+        <button class="nav-item" type="button" aria-expanded="false">
+          <svg class="icon"><use href="#i-news"></use></svg>
+          <span class="nav-item-label">宣传专栏</span>
+          <svg class="icon nav-arrow"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="nav-item" type="button" aria-expanded="false">
+          <svg class="icon"><use href="#i-chart"></use></svg>
+          <span class="nav-item-label">数据报表</span>
+          <svg class="icon nav-arrow"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="nav-item" type="button" aria-expanded="false">
+          <svg class="icon"><use href="#i-search-screen"></use></svg>
+          <span class="nav-item-label">监管查询</span>
+          <svg class="icon nav-arrow"><use href="#i-chevron"></use></svg>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="version">v2026.1109.10</div>
+        <div>客服电话：0851-86726533</div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button class="hamburger" type="button" aria-label="展开导航">
+          <svg class="icon" style="width:18px;height:18px"><use href="#i-menu"></use></svg>
+        </button>
+        <nav class="breadcrumb" aria-label="面包屑">
+          <span>工作台</span>
+          <span class="slash">/</span>
+          <span class="current">活动明细</span>
+        </nav>
+        <div class="topbar-spacer"></div>
+        <div class="top-actions">
+          <button class="top-icon" type="button" aria-label="全屏">
+            <svg class="icon" style="width:19px;height:19px"><use href="#i-expand"></use></svg>
+          </button>
+          <button class="top-icon" type="button" aria-label="视图设置">
+            <svg class="icon" style="width:19px;height:19px"><use href="#i-sliders"></use></svg>
+          </button>
+          <button class="portal-button" type="button">
+            <svg class="icon"><use href="#i-play"></use></svg>
+            访问门户
+          </button>
+          <span class="top-divider"></span>
+          <button class="user-menu" type="button" aria-label="安顺市教育局账号">
+            <span class="org-mark" aria-hidden="true"></span>
+            <span>安顺市教育局</span>
+            <svg class="icon"><use href="#i-chevron"></use></svg>
+          </button>
+        </div>
+      </header>
+
+      <nav class="page-tabs" aria-label="页面标签">
+        <button class="page-tab" type="button">工作台</button>
+        <button class="page-tab" type="button">
+          <span>研学出行/教育局端</span>
+          <span class="tab-close" aria-hidden="true">×</span>
+        </button>
+        <button class="page-tab active" type="button">
+          <span>活动明细</span>
+          <span class="tab-close" aria-hidden="true">×</span>
+        </button>
+      </nav>
+
+      <main class="main-scroll">
+        <div class="activity-tabbar">
+          <div class="activity-tabbar-inner">
+            <span class="activity-tab">活动信息</span>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <div class="content-column">
+            <section class="card" aria-labelledby="base-info-title">
+              <h2 class="section-title" id="base-info-title">活动基础信息</h2>
+              <table class="info-table">
+                <tbody>
+                  <tr>
+                    <th scope="row">活动名称</th>
+                    <td>出行申报安顺驳回验证-1105-1447</td>
+                    <th scope="row">研学范围</th>
+                    <td>跨区县</td>
+                    <th scope="row">学生费用<span class="label-note">元/人/次</span></th>
+                    <td class="fee-value">220.00</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">活动主题</th>
+                    <td>自然生态环保</td>
+                    <th scope="row">出行年级</th>
+                    <td>小学一年级,小学二年级</td>
+                    <th scope="row">出行方式</th>
+                    <td>大巴</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">研学基地</th>
+                    <td>贵州省桥梁科普教育博物馆</td>
+                    <th scope="row">基地联系电话</th>
+                    <td>18708532065</td>
+                    <th scope="row">报名人数</th>
+                    <td>0人，<button class="text-link" type="button" data-toast="报名人员详情为示例数据">查看</button></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">就餐形式</th>
+                    <td>基地承担</td>
+                    <th scope="row">活动时间</th>
+                    <td>2026-11-20 08:30:00</td>
+                    <th scope="row">贫困生数量</th>
+                    <td>2人</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">老师人数</th>
+                    <td>15人</td>
+                    <th scope="row">活动时长</th>
+                    <td>1</td>
+                    <th scope="row">特殊儿童数</th>
+                    <td>1人</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">学生人数</th>
+                    <td>1人</td>
+                    <th scope="row" class="empty"></th>
+                    <td class="empty"></td>
+                    <th scope="row" class="empty"></th>
+                    <td class="empty"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="card" aria-labelledby="plan-info-title">
+              <h2 class="section-title" id="plan-info-title">接待方案与课程</h2>
+              <div class="embedded-lists">
+                <section class="embedded-list" aria-labelledby="embedded-plan-title">
+                  <h3 class="embedded-list-title" id="embedded-plan-title">出行方案</h3>
+
+                  <div class="embedded-table-wrap">
+                    <table class="embedded-table plan-list-table">
+                      <colgroup>
+                        <col style="width:15%">
+                        <col style="width:9%">
+                        <col style="width:7%">
+                        <col style="width:10%">
+                        <col style="width:18%">
+                        <col style="width:13%">
+                        <col style="width:16%">
+                        <col style="width:12%">
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th>活动名称</th>
+                          <th>适合学段</th>
+                          <th>活动时长(天)</th>
+                          <th>活动类型</th>
+                          <th>接待主体</th>
+                          <th>创建账号</th>
+                          <th>创建时间</th>
+                          <th>操作</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="cell-ellipsis" title="测试方案">测试方案</td>
+                          <td class="cell-ellipsis" title="小学一二年级">小学一二年级</td>
+                          <td>1.0</td>
+                          <td class="cell-ellipsis" title="优秀传统文化">优秀传统文化</td>
+                          <td>
+                            <span class="host-cell">
+                              <span class="mini-tag">基地</span>
+                              <span class="cell-ellipsis" title="贵州省桥梁科普教育博物馆">贵州省桥梁科普教育博物馆</span>
+                            </span>
+                          </td>
+                          <td class="cell-ellipsis" title="贵州省桥梁科普教育博物馆管理员">贵州省桥梁科普教育博物馆管理员</td>
+                          <td class="cell-nowrap">2026-11-09 15:24:40</td>
+                          <td>
+                            <div class="row-actions">
+                              <button class="table-link" type="button" data-open-detail="plan">详情</button>
+                              <button class="table-link" type="button" data-print-detail="plan">PDF下载</button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+
+                <section class="embedded-list" aria-labelledby="embedded-course-title">
+                  <h3 class="embedded-list-title" id="embedded-course-title">研学课程</h3>
+
+                  <div class="embedded-table-wrap">
+                    <table class="embedded-table course-list-table">
+                      <colgroup>
+                        <col style="width:25%">
+                        <col style="width:12%">
+                        <col style="width:9%">
+                        <col style="width:12%">
+                        <col style="width:17%">
+                        <col style="width:13%">
+                        <col style="width:12%">
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th>课程名称</th>
+                          <th>适合学段</th>
+                          <th>课程时长(小时)</th>
+                          <th>课程类型</th>
+                          <th>创建账号</th>
+                          <th>创建时间</th>
+                          <th>操作</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="cell-ellipsis" title="真实职场体验测试">真实职场体验测试</td>
+                          <td>高中</td>
+                          <td>10</td>
+                          <td><span class="type-tag">国情市情教育</span></td>
+                          <td class="cell-ellipsis" title="贵州省桥梁科普教育博物馆管理员">贵州省桥梁科普教育博物馆管理员</td>
+                          <td class="cell-nowrap">2026-11-04 13:43:59</td>
+                          <td>
+                            <div class="row-actions">
+                              <button class="table-link" type="button" data-open-detail="course">详情</button>
+                              <button class="table-link" type="button" data-print-detail="course">PDF下载</button>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="cell-ellipsis" title="观音洞探秘">观音洞探秘</td>
+                          <td>初中</td>
+                          <td>4</td>
+                          <td><span class="type-tag">国防科工教育</span></td>
+                          <td class="cell-ellipsis" title="贵州省桥梁科普教育博物馆管理员">贵州省桥梁科普教育博物馆管理员</td>
+                          <td class="cell-nowrap">2026-11-02 16:36:30</td>
+                          <td>
+                            <div class="row-actions">
+                              <button class="table-link" type="button" data-open-detail="course">详情</button>
+                              <button class="table-link" type="button" data-print-detail="course">PDF下载</button>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="course-tall-row">
+                          <td class="course-long-name">“探秘鱼龙故里 桥见工匠精神”安顺乡情主题研学</td>
+                          <td class="course-stage-cell">小学五六年级 初中 小学三四年级 高中</td>
+                          <td>8</td>
+                          <td><span class="type-tag">自然生态环保</span></td>
+                          <td class="cell-ellipsis" title="贵州省桥梁科普教育博物馆管理员">贵州省桥梁科普教育博物馆管理员</td>
+                          <td class="cell-nowrap">2026-10-25 15:14:13</td>
+                          <td>
+                            <div class="row-actions">
+                              <button class="table-link" type="button" data-open-detail="course">详情</button>
+                              <button class="table-link" type="button" data-print-detail="course">PDF下载</button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+              </div>
+            </section>
+
+            <section class="card" aria-labelledby="people-info-title">
+              <h2 class="section-title" id="people-info-title">活动人员信息</h2>
+              <div class="mini-tabs" role="tablist" aria-label="活动人员分组">
+                <button class="mini-tab active" type="button" role="tab" aria-selected="true" data-people-tab="poor">贫困生名单（2）</button>
+                <button class="mini-tab" type="button" role="tab" aria-selected="false" data-people-tab="special">特殊儿童名单（1）</button>
+                <button class="mini-tab" type="button" role="tab" aria-selected="false" data-people-tab="activity-lead">研学活动领导小组</button>
+                <button class="mini-tab" type="button" role="tab" aria-selected="false" data-people-tab="safety-lead">安全领导小组</button>
+                <button class="mini-tab" type="button" role="tab" aria-selected="false" data-people-tab="safety-work">安全工作小组</button>
+              </div>
+
+              <div class="people-panel" data-people-panel="poor">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">姓名</th>
+                      <th scope="col">性别</th>
+                      <th scope="col">年级</th>
+                      <th scope="col">班级</th>
+                      <th scope="col">身份证号</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>张小明</td>
+                      <td>男</td>
+                      <td>小学一年级</td>
+                      <td>1班</td>
+                      <td>522425199404074238</td>
+                    </tr>
+                    <tr>
+                      <td>李小红</td>
+                      <td>女</td>
+                      <td>小学二年级</td>
+                      <td>2班</td>
+                      <td>522425199404074238</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="people-panel" data-people-panel="special" hidden>
+                <div class="soft-empty">暂无特殊儿童名单</div>
+              </div>
+              <div class="people-panel" data-people-panel="activity-lead" hidden>
+                <div class="soft-empty">暂无研学活动领导小组名单</div>
+              </div>
+              <div class="people-panel" data-people-panel="safety-lead" hidden>
+                <div class="soft-empty">暂无安全领导小组名单</div>
+              </div>
+              <div class="people-panel" data-people-panel="safety-work" hidden>
+                <div class="soft-empty">暂无安全工作小组名单</div>
+              </div>
+            </section>
+
+            <section class="card" aria-labelledby="base-files-title">
+              <h2 class="section-title" id="base-files-title">活动基础资料</h2>
+              <div class="resource-list">
+                <div class="resource-group">
+                  <h5>公示</h5>
+                  <button class="asset-thumb" type="button" aria-label="预览公示材料" data-toast="公示材料预览为示例">
+                    <span class="asset-preview">预览</span>
+                  </button>
+                </div>
+                <div class="resource-group">
+                  <h5>会议纪要</h5>
+                  <button class="asset-thumb" type="button" aria-label="预览会议纪要" data-toast="会议纪要预览为示例">
+                    <span class="asset-preview">预览</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <section class="card" aria-labelledby="activity-files-title">
+              <h2 class="section-title" id="activity-files-title">活动资料</h2>
+              <div class="empty-panel">
+                <svg class="empty-illustration" viewBox="0 0 120 102" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="boxFront" x1="0" y1="0" x2="0" y2="1">
+                      <stop stop-color="#f5f7fa"/>
+                      <stop offset="1" stop-color="#e5eaf1"/>
+                    </linearGradient>
+                    <linearGradient id="boxTop" x1="0" y1="0" x2="0" y2="1">
+                      <stop stop-color="#fafbfd"/>
+                      <stop offset="1" stop-color="#eef2f7"/>
+                    </linearGradient>
+                  </defs>
+                  <ellipse cx="61" cy="94" rx="40" ry="4" fill="#f0f3f7"/>
+                  <path d="M24 64h35v27H31.2A7.2 7.2 0 0 1 24 83.8z" fill="url(#boxFront)" stroke="#e0e6ee"/>
+                  <path d="M59 64h37v25.4A6.6 6.6 0 0 1 89.4 96H59z" fill="url(#boxFront)" stroke="#e0e6ee"/>
+                  <path d="M24 64 43 43l38 1 15 20z" fill="url(#boxTop)" stroke="#e3e8ef"/>
+                  <path d="M24 64 8 47l34-6 2 23z" fill="#f9fbfd" stroke="#e2e7ee"/>
+                  <path d="m59 64 17-20 33 3-13 17z" fill="#f8fafc" stroke="#e2e7ee"/>
+                  <path d="m31 58 4-19 24-11 4 33z" fill="#f9fbfd" stroke="#e2e8ef"/>
+                  <path d="m55 34 25 4-7 23-10 22-14-12z" fill="#fbfcfe" stroke="#e0e6ee"/>
+                  <path d="m62 39 13 2-6 13-6 15-8-8z" fill="#eef3f8" opacity=".8"/>
+                  <path d="m69 23 17 8-8 14-13-3z" fill="#f7f9fc" stroke="#e1e7ef"/>
+                </svg>
+                <p class="empty-text">暂无资料</p>
+                <button class="primary-button" type="button" data-toast="点击生成资料：示例页面未接入后端">点击生成资料</button>
+              </div>
+            </section>
+
+            <section class="card" aria-labelledby="travel-files-title">
+              <h2 class="section-title" id="travel-files-title">出行资料</h2>
+              <div class="mini-tabs single-tab" role="tablist" aria-label="车辆列表">
+                <button class="mini-tab active" type="button" role="tab" aria-selected="true">车辆1</button>
+              </div>
+
+              <table class="data-table vehicle-table">
+                <colgroup>
+                  <col style="width:12.5%">
+                  <col style="width:14%">
+                  <col style="width:12.5%">
+                  <col style="width:12.5%">
+                  <col style="width:12.5%">
+                  <col style="width:12.5%">
+                  <col style="width:12.5%">
+                  <col style="width:11%">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">驾驶员姓名</th>
+                    <th scope="col">身份证号</th>
+                    <th scope="col">档案编号</th>
+                    <th scope="col">车牌号</th>
+                    <th scope="col">车型</th>
+                    <th scope="col">所有人</th>
+                    <th scope="col">品牌</th>
+                    <th scope="col">核载人数</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>1</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="helper-text">暂无车辆资料</p>
+
+              <div class="detail-block">
+                <h3 class="section-title compact">车辆实况视频</h3>
+                <div class="mini-tabs video-tabs" role="tablist" aria-label="车辆实况视频分类">
+                  <button class="mini-tab active" type="button" role="tab" aria-selected="true" data-video-tab="fire">消防设备</button>
+                  <button class="mini-tab" type="button" role="tab" aria-selected="false" data-video-tab="hammer">安全锤</button>
+                  <button class="mini-tab" type="button" role="tab" aria-selected="false" data-video-tab="belt">安全带</button>
+                  <button class="mini-tab" type="button" role="tab" aria-selected="false" data-video-tab="tire">轮胎花纹</button>
+                </div>
+                <p class="video-empty" data-video-empty>暂无该类别视频</p>
+              </div>
+
+              <div class="detail-block driver-block">
+                <h3 class="section-title compact">司机资料</h3>
+                <p class="helper-text">暂无司机资料</p>
+              </div>
+
+              <p class="verify-note">以上车辆和司机资料已通过运政系统核验，请进行下一步审核</p>
+            </section>
+          </div>
+
+          <aside class="progress-card" aria-labelledby="progress-title">
+            <h2 class="section-title" id="progress-title">活动流程进度</h2>
+            <ol class="timeline">
+              <li class="timeline-item">
+                <span class="timeline-dot"><svg><use href="#i-check"></use></svg></span>
+                <h3 class="timeline-title">市教育局管理员</h3>
+                <p class="timeline-meta">办理人: 安顺市教育局</p>
+                <p class="timeline-meta">状态: 待审核</p>
+                <p class="timeline-meta">开始时间: 2026-11-05 14:54:00</p>
+              </li>
+              <li class="timeline-item">
+                <span class="timeline-dot"><svg><use href="#i-check"></use></svg></span>
+                <h3 class="timeline-title">学校提交</h3>
+                <p class="timeline-meta">办理人: 贵州省桥梁科普教育博物馆管理员</p>
+                <p class="timeline-meta">状态: 审批通过</p>
+                <p class="timeline-meta">开始时间: 2026-11-05 14:54:00</p>
+                <p class="timeline-meta">结束时间: 2026-11-05 14:54:00</p>
+                <p class="timeline-meta">审批时长: 0秒</p>
+              </li>
+            </ol>
+          </aside>
+        </div>
+      </main>
+
+      <footer class="action-bar">
+        <button class="primary-button" type="button" data-toast="审批操作：静态示例页面">审批</button>
+        <button class="primary-button" type="button" data-toast="当前已展示流程进度">流程进度</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="base-app" id="baseDetailView" hidden>
+    <aside class="base-sidebar" aria-label="基地端主导航">
+      <div class="base-logo">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <defs>
+            <linearGradient id="baseLogoGrad" x1="4" y1="8" x2="28" y2="26" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#38b4ee"/>
+              <stop offset="0.48" stop-color="#207de8"/>
+              <stop offset="1" stop-color="#36c48b"/>
+            </linearGradient>
+          </defs>
+          <circle cx="16" cy="16" r="14" fill="url(#baseLogoGrad)" opacity="0.13"/>
+          <path d="M4.5 18.6c3.2-7.1 8-10.2 12.6-9.2 4.1.9 6.4 3.9 8.2 7.9" fill="none" stroke="url(#baseLogoGrad)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M6.8 23c4.1-7.7 9.4-10.1 15.8-7.2" fill="none" stroke="#34a2eb" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M11 27.2c2.7-5 6.3-6.2 10.6-3.8" fill="none" stroke="#52c38a" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="17.1" cy="9.4" r="2.1" fill="#2791e9"/>
+        </svg>
+      </div>
+      <nav class="base-nav">
+        <button class="base-nav-item" type="button" title="工作台">
+          <svg class="icon"><use href="#i-home"></use></svg>
+        </button>
+        <button class="base-nav-item is-current" type="button" title="课程与方案管理">
+          <svg class="icon"><use href="#i-screen"></use></svg>
+          <svg class="icon base-nav-caret"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="出行管理">
+          <svg class="icon"><use href="#i-building"></use></svg>
+          <svg class="icon base-nav-caret"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="支付中心">
+          <svg class="icon"><use href="#i-star"></use></svg>
+          <svg class="icon base-nav-caret"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="产品管理">
+          <svg class="icon"><use href="#i-menu"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="财务管理">
+          <svg class="icon"><use href="#i-chart"></use></svg>
+          <svg class="icon base-nav-caret"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="商户中心">
+          <svg class="icon"><use href="#i-search-screen"></use></svg>
+          <svg class="icon base-nav-caret"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="评价管理">
+          <svg class="icon"><use href="#i-shield"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="车队信息">
+          <svg class="icon"><use href="#i-building"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="车队管理">
+          <svg class="icon"><use href="#i-search-screen"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="基地管理">
+          <svg class="icon"><use href="#i-building"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="组织管理">
+          <svg class="icon"><use href="#i-star"></use></svg>
+          <svg class="icon base-nav-caret"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="订单与账单">
+          <svg class="icon"><use href="#i-news"></use></svg>
+          <svg class="icon base-nav-caret"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="宣传专栏">
+          <svg class="icon"><use href="#i-news"></use></svg>
+          <svg class="icon base-nav-caret"><use href="#i-chevron"></use></svg>
+        </button>
+        <button class="base-nav-item" type="button" title="投保管理">
+          <svg class="icon"><use href="#i-shield"></use></svg>
+        </button>
+      </nav>
+      <div class="base-side-version">v2026.1109.10</div>
+    </aside>
+
+    <div class="base-workspace">
+      <header class="base-topbar">
+        <button class="base-hamburger" type="button" aria-label="展开导航">
+          <svg class="icon" style="width:18px;height:18px"><use href="#i-menu"></use></svg>
+        </button>
+        <nav class="base-breadcrumb" aria-label="面包屑">
+          <a href="#" data-close-detail>工作台</a>
+          <span class="base-slash">/</span>
+          <span class="base-crumb-current" id="baseCrumb">学校活动详情</span>
+        </nav>
+        <div class="base-top-spacer"></div>
+        <div class="base-top-actions">
+          <button class="base-top-icon" type="button" aria-label="全屏">
+            <svg class="icon" style="width:18px;height:18px"><use href="#i-expand"></use></svg>
+          </button>
+          <button class="base-top-icon" type="button" aria-label="视图设置">
+            <svg class="icon" style="width:18px;height:18px"><use href="#i-sliders"></use></svg>
+          </button>
+          <button class="base-portal" type="button">
+            <svg class="icon"><use href="#i-play"></use></svg>
+            访问门户
+          </button>
+          <span class="base-top-bar"></span>
+          <div class="base-current-unit">
+            <span>当前单位</span>
+            贵州省桥梁科普教育博物馆
+          </div>
+          <span class="base-top-bar"></span>
+          <div class="base-user">
+            <span class="base-avatar" aria-hidden="true"></span>
+            <span>贵州省桥梁科普教育博物馆管理员</span>
+            <svg class="icon"><use href="#i-chevron"></use></svg>
+          </div>
+          <button class="base-pdf-button" type="button" data-print-detail="current">PDF下载</button>
+        </div>
+      </header>
+
+      <nav class="base-page-tabs" aria-label="页面标签">
+        <button class="base-page-tab" type="button" data-close-detail>工作台</button>
+        <button class="base-page-tab" type="button" data-close-detail>
+          <span id="baseMiddleTab">出行方案</span>
+          <span class="base-tab-close" aria-hidden="true">×</span>
+        </button>
+        <button class="base-page-tab active" type="button">
+          <span id="baseActiveTab">学校活动详情</span>
+          <span class="base-tab-close" aria-hidden="true">×</span>
+        </button>
+      </nav>
+
+      <main class="base-main" id="baseMainScroll">
+        <div class="base-back-row">
+          <button class="base-back-button" type="button" data-close-detail>← 返回活动明细</button>
+        </div>
+
+        <div class="base-detail" id="basePlanDetail">
+          <section class="base-card" aria-labelledby="basePlanInfoTitle">
+            <h2 class="base-section-title" id="basePlanInfoTitle">活动基础信息</h2>
+            <div class="base-info-table">
+              <div class="base-info-row">
+                <div class="base-info-cell label-cell">活动名称</div>
+                <div class="base-info-cell value-cell">桥见贵州1日营</div>
+                <div class="base-info-cell label-cell">基地名称</div>
+                <div class="base-info-cell value-cell">贵州省桥梁科普教育博物馆</div>
+                <div class="base-info-cell label-cell">适合学段</div>
+                <div class="base-info-cell value-cell">小学一二年级、小学三四年级、小学五六年级</div>
+              </div>
+              <div class="base-info-row">
+                <div class="base-info-cell label-cell">活动类型</div>
+                <div class="base-info-cell value-cell">优秀传统文化</div>
+                <div class="base-info-cell label-cell">活动时长(天)</div>
+                <div class="base-info-cell value-cell">1.0</div>
+                <div class="base-info-cell label-cell">关联课程</div>
+                <div class="base-info-cell value-cell">贵州省桥梁科普教育博物馆桥见贵州1日研学</div>
+              </div>
+              <div class="base-info-row">
+                <div class="base-info-cell label-cell">就餐形式</div>
+                <div class="base-info-cell value-cell">基地承担</div>
+                <div class="base-info-cell label-cell">学生费用</div>
+                <div class="base-info-cell value-cell"><span class="highlight">¥220.00</span></div>
+                <div class="base-info-cell label-cell">老师费用</div>
+                <div class="base-info-cell value-cell">¥0.10</div>
+              </div>
+              <div class="base-info-row">
+                <div class="base-info-cell label-cell">状态</div>
+                <div class="base-info-cell value-cell">已上架</div>
+                <div class="base-info-cell label-cell">创建人</div>
+                <div class="base-info-cell value-cell">贵州省桥梁科普教育博物馆管理员</div>
+                <div class="base-info-cell label-cell">创建时间</div>
+                <div class="base-info-cell value-cell">2026-09-24 10:02:45</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="base-card" aria-labelledby="basePlanIntroTitle">
+            <h2 class="base-section-title" id="basePlanIntroTitle">活动介绍</h2>
+            <div class="base-legacy-text">本次坝陵河大桥研学课程以桥梁工程科普为核心，依托坝陵河大桥超级工程与桥梁博物馆实景资源，打造理论与实践结合的沉浸式研学课堂。课程涵盖桥梁知识科普、超级工程实地探访、桥梁核心结构探秘、桥梁模型搭建实践等多元内容，带领学生走出课堂，近距离观察桥梁构造、了解大桥建造难点与受力原理，系统学习各类桥型的结构特点。同时通过小组协作实践、研学分享总结等环节，锻炼学生的动手能力、团队协作能力与思辨表达能力，让学生直观感受中国基建的磅礴力量，拓宽科学视野，培养崇尚科学、勇于探索的良好素养。</div>
+          </section>
+
+          <section class="base-card" aria-labelledby="basePlanCourseTitle">
+            <h2 class="base-section-title" id="basePlanCourseTitle">关联课程</h2>
+            <div class="base-course-heading">贵州省桥梁科普教育博物馆桥见贵州1日研学</div>
+            <div class="base-rich">
+              <p>课程内容：</p>
+              <h2>「桥见贵州」坝陵河大桥主题研学一日营</h2>
+              <p><strong>研学主题：探秘超级工程・桥见中国力量</strong><br>以世界级峡谷大桥为天然课堂，让桥梁知识走出课本，让大国工程精神扎根童心。</p>
+              <h3>研学亮点速览</h3>
+              <ul>
+                <li><strong>超级工程零距离</strong>—— 登临坝陵河大桥，深入桥体内部，实地触摸钢桁梁、吊索等核心构件，感受 "中国建造" 的震撼</li>
+                <li><strong>核心构件实景课堂</strong>—— 走进大桥 "定海神针" 三角锚碇，现场读懂悬索桥受力原理</li>
+                <li><strong>小小工程师职业体验</strong>—— 梁桥、拱桥、悬索桥、斜拉桥四桥型系统学习，亲手拼装斜拉桥与达芬奇桥模型</li>
+                <li><strong>全程沉浸式仪式感</strong>—— 授营旗、集体宣誓、成果展示，开营到结营见证每一步成长</li>
+              </ul>
+              <h3>一日行程安排</h3>
+              <p><strong>08:30–09:30｜开营集结・启航仪式</strong><br>"授旗宣誓，整装出发"</p>
+              <ul>
+                <li>活动内容：指定地点集合整队，清点 30 名学生人数；主持人宣布开营；研学导师介绍研学主题、行程及安全纪律；学生代表发言，带队老师重申安全要求；授营旗、集体宣誓；全员有序乘车前往坝陵河大桥研学基地</li>
+                <li>负责人：教官、带队老师、安全员</li>
+                <li>备注：提前 10 分钟完成人数清点，重点强调乘车安全</li>
+              </ul>
+              <p><strong>09:50–11:00｜坝陵河桥梁博物馆现场教学</strong><br>"一堂行走的桥梁科普课"</p>
+              <ul>
+                <li>活动内容：专业导师带队参观桥梁主题博物馆，讲解桥梁分类、基础结构等专业知识；结合展品开展互动答疑，指导学生填写研学手册、记录知识点</li>
+                <li>负责人：教官、安全员</li>
+                <li>备注：分组有序参观，禁止触摸展馆展品</li>
+              </ul>
+              <p><strong>11:10–12:10｜登临坝陵河大桥・探访桥体内部</strong><br>"超级工程零距离 —— 走进世界级峡谷大桥的心脏"</p>
+              <ul>
+                <li>活动内容：乘车抵达点位，有序进入桥体内部；导师讲解大桥建造历程、峡谷桥梁建设难点；实地观察钢桁梁、吊索等核心构件，直观感受超级工程风貌</li>
+                <li>负责人：研学导师、带队老师、安全员</li>
+                <li>备注：桥体内注意脚下安全，严禁翻越防护围栏，全程听从指引</li>
+              </ul>
+              <p><strong>12:20–13:20｜午餐及自由休息</strong><br>"能量补给，交流见闻"</p>
+              <ul>
+                <li>活动内容：基地餐厅统一用餐，餐后自主清理餐桌；学生在指定区域休息、交流研学见闻；老师全程值守管控</li>
+                <li>负责人：研学导师、带队老师</li>
+                <li>备注：餐前清点人数，休息期间定时巡查，禁止学生私自离队</li>
+              </ul>
+              <p><strong>13:20–13:50｜探秘大桥核心・三角锚碇研学</strong><br>"读懂悬索桥的 ' 定海神针 '"</p>
+              <ul>
+                <li>活动内容：实地探访大桥三角锚碇，导师讲解锚碇功能、作用及悬索桥受力原理，认识桥梁核心构件</li>
+                <li>负责人：研学导师、带队老师</li>
+                <li>备注：注意行走安全，禁止在边坡区域追逐打闹</li>
+              </ul>
+              <p><strong>13:50–15:20｜小小桥梁工程师・理论＋动手实践</strong><br>"从课堂到工坊，亲手搭建一座桥"</p>
+              <ul>
+                <li>活动内容：20 分钟理论学习，了解梁桥、拱桥、悬索桥、斜拉桥四种桥型的结构特点与优劣；分组协作完成斜拉桥、达芬奇桥模型拼装，沉浸式体验桥梁工程师工作</li>
+                <li>负责人：研学导师、带队老师</li>
+                <li>备注：统一分发教具，全员佩戴安全头盔，小组分工协作完成实践</li>
+              </ul>
+              <p><strong>15:20–16:20｜研学分享・结营仪式</strong><br>"我的桥梁成果，闪耀登场"</p>
+              <ul>
+                <li>活动内容：学生代表分享研学收获、展示桥梁模型成果；导师总结核心知识点、点评学生实践表现；集体合影留念，统一回收教具、整理物资</li>
+                <li>负责人：研学导师、带队老师</li>
+                <li>备注：提前备好拼装材料，保障人手一套</li>
+              </ul>
+              <p><strong>17:00–18:00｜返程返校</strong><br>"满载而归，平安到家"</p>
+              <ul>
+                <li>活动内容：集合清点全员人数，检查个人物品无遗漏；有序乘车返程，途中交流复盘研学知识；抵达学校后有序解散，完成学生交接</li>
+                <li>负责人：带队老师、安全员</li>
+                <li>备注：往返途中定时清点人数，保障学生全员安全返校</li>
+              </ul>
+              <div class="base-gallery" aria-label="课程内容图片">
+                <span class="base-gallery-item"><img src="assets/plan/course-content-1.jpg" alt="课程内容图片1"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-2.jpg" alt="课程内容图片2"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-3.jpg" alt="课程内容图片3"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-4.jpg" alt="课程内容图片4"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-5.jpg" alt="课程内容图片5"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-6.jpg" alt="课程内容图片6"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-7.jpg" alt="课程内容图片7"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-8.jpg" alt="课程内容图片8"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-9.jpg" alt="课程内容图片9"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-10.jpg" alt="课程内容图片10"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-11.jpg" alt="课程内容图片11"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-12.jpg" alt="课程内容图片12"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-13.jpg" alt="课程内容图片13"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-14.jpg" alt="课程内容图片14"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-15.jpg" alt="课程内容图片15"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-16.jpg" alt="课程内容图片16"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-17.jpg" alt="课程内容图片17"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-18.jpg" alt="课程内容图片18"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-19.jpg" alt="课程内容图片19"></span>
+                <span class="base-gallery-item"><img src="assets/plan/course-content-20.jpg" alt="课程内容图片20"></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="base-card" aria-labelledby="basePlanImagesTitle">
+            <h2 class="base-section-title" id="basePlanImagesTitle">活动图片</h2>
+            <div class="base-gallery">
+              <span class="base-gallery-item"><img src="assets/plan/activity-1.jpg" alt="活动图片1"></span>
+              <span class="base-gallery-item"><img src="assets/plan/activity-2.jpg" alt="活动图片2"></span>
+              <span class="base-gallery-item"><img src="assets/plan/activity-3.jpg" alt="活动图片3"></span>
+              <span class="base-gallery-item"><img src="assets/plan/activity-4.jpg" alt="活动图片4"></span>
+              <span class="base-gallery-item"><img src="assets/plan/activity-5.jpg" alt="活动图片5"></span>
+              <span class="base-gallery-item"><img src="assets/plan/activity-6.jpg" alt="活动图片6"></span>
+              <span class="base-gallery-item"><img src="assets/plan/activity-7.jpg" alt="活动图片7"></span>
+            </div>
+          </section>
+
+          <section class="base-card" aria-labelledby="basePlanVideoTitle">
+            <h2 class="base-section-title" id="basePlanVideoTitle">活动视频</h2>
+            <div class="base-empty">
+              <svg viewBox="0 0 120 102" aria-hidden="true">
+                <ellipse cx="61" cy="94" rx="40" ry="4" fill="#f0f3f7"/>
+                <path d="M24 64h35v27H31.2A7.2 7.2 0 0 1 24 83.8z" fill="#f7f9fc" stroke="#e0e6ee"/>
+                <path d="M59 64h37v25.4A6.6 6.6 0 0 1 89.4 96H59z" fill="#f7f9fc" stroke="#e0e6ee"/>
+                <path d="M24 64 43 43l38 1 15 20z" fill="#fafbfd" stroke="#e3e8ef"/>
+                <path d="M24 64 8 47l34-6 2 23z" fill="#f9fbfd" stroke="#e2e7ee"/>
+                <path d="m59 64 17-20 33 3-13 17z" fill="#f8fafc" stroke="#e2e7ee"/>
+                <path d="m31 58 4-19 24-11 4 33z" fill="#f9fbfd" stroke="#e2e8ef"/>
+                <path d="m55 34 25 4-7 23-10 22-14-12z" fill="#fbfcfe" stroke="#e0e6ee"/>
+                <path d="m62 39 13 2-6 13-6 15-8-8z" fill="#eef3f8" opacity=".8"/>
+              </svg>
+              <span>暂无活动视频</span>
+            </div>
+          </section>
+
+          <section class="base-card" aria-labelledby="basePlanScheduleTitle">
+            <h2 class="base-section-title" id="basePlanScheduleTitle">活动安排</h2>
+            <div class="base-schedule-day">第1天</div>
+            <table class="base-table">
+              <colgroup>
+                <col style="width:22%">
+                <col style="width:22%">
+                <col style="width:56%">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>时间</th>
+                  <th>活动名称</th>
+                  <th>活动内容</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>08:00 至 18:00</td>
+                  <td>桥见贵州</td>
+                  <td>参观桥梁博物馆+登桥+桥梁模型搭建</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="base-card" aria-labelledby="basePlanFeeTitle">
+            <h2 class="base-section-title" id="basePlanFeeTitle">费用明细</h2>
+            <table class="base-table">
+              <colgroup>
+                <col style="width:72%">
+                <col style="width:28%">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>项目名称</th>
+                  <th>价格(元)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>交通费</td><td>¥48.00</td></tr>
+                <tr><td>用餐</td><td>¥30.00</td></tr>
+                <tr><td>桥梁博物馆参观+上桥</td><td>¥70.00</td></tr>
+                <tr><td>研学课程</td><td>¥38.00</td></tr>
+                <tr><td>研学执行</td><td>¥18.00</td></tr>
+                <tr><td>研学物料（矿泉水、横幅）</td><td>¥6.00</td></tr>
+                <tr><td>研学手册、研学保险</td><td>¥10.00</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="base-card" aria-labelledby="basePlanMealTitle">
+            <h2 class="base-section-title" id="basePlanMealTitle">餐食安排</h2>
+            <div class="base-rich">
+              <p>自助餐，基地餐厅就餐</p>
+            </div>
+          </section>
+
+          <section class="base-card" aria-labelledby="basePlanTravelTitle">
+            <h2 class="base-section-title" id="basePlanTravelTitle">出行安排</h2>
+            <div class="base-rich">
+              <img class="base-content-image" src="assets/plan/travel-1.jpg" alt="出行安排">
+            </div>
+          </section>
+        </div>
+
+        <div class="base-detail" id="baseCourseDetail" hidden>
+          <section class="base-card" aria-labelledby="baseCourseInfoTitle">
+            <h2 class="base-section-title" id="baseCourseInfoTitle">课程基础信息</h2>
+            <div class="base-info-table">
+              <div class="base-info-row">
+                <div class="base-info-cell label-cell">课程名称</div>
+                <div class="base-info-cell value-cell">“探黔中文明根脉·承长征精神薪火”</div>
+                <div class="base-info-cell label-cell">适合学段</div>
+                <div class="base-info-cell value-cell">小学五六年级、初中、高中</div>
+                <div class="base-info-cell label-cell">课程类型</div>
+                <div class="base-info-cell value-cell">革命传统教育</div>
+              </div>
+              <div class="base-info-row">
+                <div class="base-info-cell label-cell">课程时长(小时)</div>
+                <div class="base-info-cell value-cell">8</div>
+                <div class="base-info-cell label-cell">课程价格</div>
+                <div class="base-info-cell value-cell">¥288.00</div>
+                <div class="base-info-cell label-cell empty"></div>
+                <div class="base-info-cell value-cell empty"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="base-card" aria-labelledby="baseCourseImagesTitle">
+            <h2 class="base-section-title" id="baseCourseImagesTitle">课程图片</h2>
+            <div class="base-course-gallery">
+              <span class="base-gallery-item"><img src="assets/course/course-1.jpg" alt="课程图片1"></span>
+            </div>
+          </section>
+
+          <section class="base-card" aria-labelledby="baseCourseVideoTitle">
+            <h2 class="base-section-title" id="baseCourseVideoTitle">课程视频</h2>
+            <div class="base-video-card">
+              <span class="base-video-player" role="img" aria-label="课程视频1"></span>
+              <div class="base-video-label">课程视频1</div>
+            </div>
+          </section>
+
+          <section class="base-card" aria-labelledby="baseCourseContentTitle">
+            <h2 class="base-section-title" id="baseCourseContentTitle">课程详情</h2>
+            <div class="base-rich">
+              <p><strong>第一阶段：黔中文明溯源学习</strong></p>
+              <p>学生走进贵州省博物馆，依托场馆海量文物资源与数字展陈技术，系统溯源贵州从古至今的发展脉络，了解史前文明、先秦文化、秦汉发展、明清民族交融及近代革新历程。聚焦普定穿洞骨器、兴义万屯铜车马、特色苗族服饰等核心馆藏文物，解读贵州多元民族文化内涵，直观感受黔中大地厚重悠久的历史底蕴与璀璨的文明成就。</p>
+              <p><strong>第二阶段：场馆建筑与文化探究</strong></p>
+              <p>跟随专业讲解深度研学，解读贵州省博物馆“菱石藏千岛”的整体建筑造型、“多彩面纱”幕墙设计的深层寓意，关联贵州“文化千岛、多民族共生”的独特地域特质。从建筑美学、设计理念切入，打通艺术审美与地域人文的关联，读懂贵州包容多元、兼容并蓄的文化内核，实现美育与人文知识的双向提升。</p>
+              <p><strong>第三阶段：红色文脉衔接课堂</strong></p>
+              <p>串联贵州千年文明发展脉络，衔接明清改土归流、近代社会变革等历史节点，重点梳理红军长征在贵州的光辉革命历程，厘清黔中本土文明传承与红色精神孕育的内在关联。帮助学生构建完整的知识体系，明晰贵州厚重的人文底蕴与珍贵的红色革命底色，读懂本土文明与红色精神的薪火相传。</p>
+              <p><strong>第四阶段：沉浸式红色研学实践</strong></p>
+              <p>走进贵州长征文化艺术馆，观看《红飘带·伟大征程》全息沉浸式演出，实景还原遵义会议、四渡赤水、爬雪山、过草地等经典长征场景，沉浸式体悟红军不畏艰险、艰苦奋斗、不怕牺牲、忠诚担当的崇高革命精神。通过参观红色主题展区，对比贵州古代交通闭塞、发展滞后与当代日新月异的发展巨变，深刻领会长征精神的历史内涵与新时代价值。</p>
+              <p><strong>第五阶段：双线主题小组课题探究</strong></p>
+              <p>以小组合作模式开展双线研学调研，兼顾人文与红色两大维度：文明维度探究馆藏文物的历史地位、文化价值与地域意义；红色维度梳理贵州长征关键史实、经典革命故事与红色文脉脉络。结合各学段学科知识，探究新时代长征精神对青少年成长的指引作用，全方位锻炼史料研读、团队协作、思辨表达与问题探究能力。</p>
+              <p>课程末期聚焦研学成果固化输出，学生结合所学内容完成研学笔记、主题探究作业或研学报告，通过小组汇报、结营总结开展成果交流，真正实现学史明理、学史增信、以研促学，全方位提升学生人文素养、红色认知、思辨能力与家国情怀。</p>
+              <img class="base-content-image narrow" src="assets/course/course-detail-long.jpg" alt="课程详情长图">
+            </div>
+          </section>
+
+          <section class="base-card" aria-labelledby="baseCourseIntroTitle">
+            <h2 class="base-section-title" id="baseCourseIntroTitle">课程简介</h2>
+            <div class="base-rich">
+              <p>本研学依托贵州省博物馆、贵州长征文化艺术馆（红飘带）优质人文红色科教资源，适配中小学全学段学生，紧扣道德与法治、历史、语文、艺术学科教学内容，融合人文探秘、红色研学、实景调研、思政育人与课题探究，构建系统化、一体化的研学课程体系，助力学生知行结合、学以致用。</p>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      const toast = document.getElementById("toast");
+      const baseDetailView = document.getElementById("baseDetailView");
+      const basePlanDetail = document.getElementById("basePlanDetail");
+      const baseCourseDetail = document.getElementById("baseCourseDetail");
+      const baseMainScroll = document.getElementById("baseMainScroll");
+      const baseCrumb = document.getElementById("baseCrumb");
+      const baseMiddleTab = document.getElementById("baseMiddleTab");
+      const baseActiveTab = document.getElementById("baseActiveTab");
+      const auditTitle = document.title;
+      let toastTimer = null;
+
+      function showToast(message) {
+        window.clearTimeout(toastTimer);
+        toast.textContent = message;
+        toast.classList.add("show");
+        toastTimer = window.setTimeout(function () {
+          toast.classList.remove("show");
+        }, 1800);
+      }
+
+      function currentDetail() {
+        return location.hash === "#course-detail" ? "course" : location.hash === "#plan-detail" ? "plan" : null;
+      }
+
+      function renderDetail() {
+        const detail = currentDetail();
+        if (!detail) {
+          baseDetailView.hidden = true;
+          document.title = auditTitle;
+          document.body.classList.remove("is-base-detail");
+          return;
+        }
+
+        baseDetailView.hidden = false;
+        document.body.classList.add("is-base-detail");
+        basePlanDetail.hidden = detail !== "plan";
+        baseCourseDetail.hidden = detail !== "course";
+        if (detail === "plan") {
+          baseCrumb.textContent = "学校活动详情";
+          baseMiddleTab.textContent = "出行方案";
+          baseActiveTab.textContent = "学校活动详情";
+          document.title = "学校活动详情 - 贵州省研学综合服务网";
+        } else {
+          baseCrumb.textContent = "课程详情";
+          baseMiddleTab.textContent = "研学课程";
+          baseActiveTab.textContent = "课程详情";
+          document.title = "课程详情 - 贵州省研学综合服务网";
+        }
+        if (baseMainScroll) {
+          baseMainScroll.scrollTop = 0;
+        }
+      }
+
+      function openDetail(kind) {
+        const target = kind === "course" ? "#course-detail" : "#plan-detail";
+        if (location.hash === target) {
+          renderDetail();
+        } else {
+          location.hash = target;
+        }
+      }
+
+      function closeDetail(event) {
+        if (event) {
+          event.preventDefault();
+        }
+        history.pushState(null, auditTitle, location.pathname + location.search);
+        renderDetail();
+      }
+
+      function printDetail(kind) {
+        if (kind === "current") {
+          window.print();
+          return;
+        }
+        openDetail(kind);
+        window.setTimeout(function () {
+          window.print();
+        }, 450);
+      }
+
+      document.addEventListener("click", function (event) {
+        const toastTrigger = event.target.closest("[data-toast]");
+        if (toastTrigger) {
+          showToast(toastTrigger.getAttribute("data-toast"));
+        }
+
+        const detailTrigger = event.target.closest("[data-open-detail]");
+        if (detailTrigger) {
+          openDetail(detailTrigger.getAttribute("data-open-detail"));
+        }
+
+        const printTrigger = event.target.closest("[data-print-detail]");
+        if (printTrigger) {
+          printDetail(printTrigger.getAttribute("data-print-detail"));
+        }
+
+        const closeTrigger = event.target.closest("[data-close-detail]");
+        if (closeTrigger) {
+          closeDetail(event);
+        }
+      });
+
+      window.addEventListener("hashchange", renderDetail);
+      renderDetail();
+
+      const peopleTabs = Array.from(document.querySelectorAll("[data-people-tab]"));
+      const peoplePanels = Array.from(document.querySelectorAll("[data-people-panel]"));
+
+      peopleTabs.forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          const target = tab.getAttribute("data-people-tab");
+          peopleTabs.forEach(function (item) {
+            const isActive = item === tab;
+            item.classList.toggle("active", isActive);
+            item.setAttribute("aria-selected", String(isActive));
+          });
+          peoplePanels.forEach(function (panel) {
+            panel.hidden = panel.getAttribute("data-people-panel") !== target;
+          });
+        });
+      });
+
+      const videoTabs = Array.from(document.querySelectorAll("[data-video-tab]"));
+      videoTabs.forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          videoTabs.forEach(function (item) {
+            const isActive = item === tab;
+            item.classList.toggle("active", isActive);
+            item.setAttribute("aria-selected", String(isActive));
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
