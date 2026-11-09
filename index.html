@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>研学出行审核 · 课程与出行方案 Demo</title>
+  <link rel="stylesheet" href="./education-travel-review.css" />
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.3c0 4.8 3.2 8.2 7.5 9.7 4.3-1.5 7.5-4.9 7.5-9.7V6L12 3Z"/><path d="m8.5 12 2.2 2.2 4.9-5"/></symbol>
+    <symbol id="i-apps" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5l8-2v18M12 7h8v14M7 7h1M7 10h1M7 13h1M7 16h1M16 10h1M16 13h1M16 16h1M3 21h18"/></symbol>
+    <symbol id="i-school" viewBox="0 0 24 24"><path d="M4 21V9l8-5 8 5v12M8 21v-7h8v7M9 9h6"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 6 5-2 8 3 5-2v14l-5 2-8-3-5 2V6Z"/><path d="M8 4v14M16 7v14"/></symbol>
+    <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="m4 10 15-5v14L4 14v-4Z"/><path d="M8 14v5M4 10H3v4h1"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 8.4A7 7 0 0 1 19 12M4.9 15.6A7 7 0 0 0 18 12"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M19 14v5H5V5h5"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22.5v-17Z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h3a3 3 0 0 0 3-3V9a3 3 0 0 1 3-3h-1"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6V2Z"/><path d="M14 2v5h4M9 13h6M9 17h6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></symbol>
+  </svg>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-cn">贵州省研学综合服务网</div>
+      </div>
+      <nav class="nav" aria-label="主导航">
+        <button class="nav-item"><svg class="icon"><use href="#i-home"/></svg>工作台</button>
+        <button class="nav-item"><svg class="icon"><use href="#i-monitor"/></svg>大屏<svg class="icon nav-arrow"><use href="#i-chevron-down"/></svg></button>
+        <button class="nav-item active"><svg class="icon"><use href="#i-shield"/></svg>审核管理<svg class="icon nav-arrow"><use href="#i-chevron-down"/></svg></button>
+        <div class="nav-children">
+          <button class="nav-child">基地审核</button>
+          <button class="nav-child">课程审核</button>
+          <button class="nav-child">教育实践计划审核</button>
+          <button class="nav-child active">研学出行</button>
+        </div>
+        <button class="nav-item"><svg class="icon"><use href="#i-apps"/></svg>出行管理<svg class="icon nav-arrow"><use href="#i-chevron-down"/></svg></button>
+        <button class="nav-item"><svg class="icon"><use href="#i-star"/></svg>评价管理</button>
+        <button class="nav-item"><svg class="icon"><use href="#i-building"/></svg>机构管理</button>
+        <button class="nav-item"><svg class="icon"><use href="#i-school"/></svg>学校管理</button>
+        <button class="nav-item"><svg class="icon"><use href="#i-map"/></svg>基地管理</button>
+        <button class="nav-item"><svg class="icon"><use href="#i-megaphone"/></svg>宣传专栏<svg class="icon nav-arrow"><use href="#i-chevron-down"/></svg></button>
+        <button class="nav-item"><svg class="icon"><use href="#i-shield"/></svg>监管查询<svg class="icon nav-arrow"><use href="#i-chevron-down"/></svg></button>
+      </nav>
+      <div class="sidebar-foot">
+        <div>v2026.1108.01</div>
+        <div>客服电话：0851-86726533</div>
+      </div>
+    </aside>
+
+    <div class="main-shell">
+      <header class="topbar">
+        <button class="menu-button" type="button" aria-label="展开菜单"><svg class="icon"><use href="#i-menu"/></svg></button>
+        <div class="crumbs" id="breadcrumbs">
+          <span class="crumb-muted">工作台</span>
+          <span class="crumb-separator">/</span>
+          <span class="crumb-muted">审核管理</span>
+          <span class="crumb-separator">/</span>
+          <strong>研学出行/教育局端</strong>
+        </div>
+        <div class="top-actions">
+          <button class="icon-action" type="button" aria-label="全屏"><svg class="icon"><use href="#i-expand"/></svg></button>
+          <button class="icon-action" type="button" aria-label="消息"><svg class="icon"><use href="#i-mail"/></svg></button>
+          <button class="portal-button" type="button"><svg class="icon icon-sm"><use href="#i-external"/></svg>访问门户</button>
+          <button class="user-chip" type="button">
+            <span class="user-avatar">贵</span>
+            <span class="user-name">贵阳教育局</span>
+            <svg class="icon icon-sm"><use href="#i-chevron-down"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <nav class="view-tabs" aria-label="页面标签">
+        <button class="view-tab" type="button">工作台</button>
+        <button class="view-tab" type="button">课程审核</button>
+        <button class="view-tab active" type="button" id="tabList">研学出行/教育局端<span class="tab-close">×</span></button>
+        <button class="view-tab" type="button" id="tabDetail">活动明细<span class="tab-close">×</span></button>
+        <button class="view-tab" type="button" id="tabCourseDetail" hidden>课程详情<span class="tab-close">×</span></button>
+        <button class="view-tab" type="button" id="tabPlanDetail" hidden>学校活动详情<span class="tab-close">×</span></button>
+      </nav>
+
+      <main class="content">
+        <section class="view active" id="listView">
+          <div class="card filter-card">
+            <div class="filter-grid">
+              <label class="field">
+                <span class="field-label">关键词</span>
+                <input class="input" id="keywordInput" type="text" placeholder="活动名称 / 学校名称" />
+              </label>
+              <label class="field">
+                <span class="field-label">学校名称</span>
+                <input class="input" id="schoolInput" type="text" placeholder="请输入学校名称" />
+              </label>
+              <label class="field">
+                <span class="field-label">审核状态</span>
+                <select class="select" id="statusSelect">
+                  <option value="">请选择审核状态</option>
+                  <option value="待审核">待审核</option>
+                  <option value="已通过">已通过</option>
+                  <option value="已退回">已退回</option>
+                </select>
+              </label>
+              <div class="filter-actions">
+                <button class="btn btn-primary" id="searchButton" type="button"><svg class="icon icon-sm"><use href="#i-search"/></svg>搜索</button>
+                <button class="btn" id="resetButton" type="button"><svg class="icon icon-sm"><use href="#i-refresh"/></svg>重置</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card table-card">
+            <div class="table-toolbar">
+              <div class="inner-tabs" role="tablist" aria-label="审核状态">
+                <button class="inner-tab active" type="button" data-list-tab="pending">我的待办 <span class="count-pill" id="pendingCount">3</span></button>
+                <button class="inner-tab" type="button" data-list-tab="done">我的已办 <span class="count-pill" id="doneCount">2</span></button>
+              </div>
+              <div class="tool-buttons">
+                <button class="round-tool" type="button" aria-label="搜索"><svg class="icon icon-sm"><use href="#i-search"/></svg></button>
+                <button class="round-tool" type="button" aria-label="刷新"><svg class="icon icon-sm"><use href="#i-refresh"/></svg></button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width:100px">学校名称</th>
+                    <th style="width:126px">基地/机构名称</th>
+                    <th style="width:184px">活动名称</th>
+                    <th style="width:76px">研学主题</th>
+                    <th style="width:100px">出行时间</th>
+                    <th style="width:48px">时长</th>
+                    <th style="width:92px">年级</th>
+                    <th style="width:58px">学生人数</th>
+                    <th style="width:68px">学生费用</th>
+                    <th style="width:56px">老师人数</th>
+                    <th style="width:70px">状态</th>
+                    <th style="width:100px">创建时间</th>
+                    <th style="width:78px">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="listRows"></tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <span>共 <b id="totalCount">3</b> 条</span>
+              <button class="page-box" type="button" disabled>‹</button>
+              <button class="page-box active" type="button">1</button>
+              <button class="page-box" type="button" disabled>›</button>
+              <select class="select" style="height:28px;min-width:96px;padding-left:8px">
+                <option>10条/页</option>
+                <option>20条/页</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="detailView">
+          <div class="detail-top">
+            <div>
+              <button class="back-link" id="backToList" type="button"><svg class="icon icon-sm"><use href="#i-chevron-left"/></svg>返回研学出行列表</button>
+              <h1 class="detail-title" id="detailTitle">贵阳拥抱大学-市直-出行申报-1109-A</h1>
+              <div class="detail-subline">
+                <span class="status status-pending" id="detailStatus">待审核</span>
+                <span id="detailSchool">贵阳一小</span>
+                <span>/</span>
+                <span id="detailBase">贵州拥抱大学研学教育基地</span>
+                <span>/</span>
+                <span id="detailCreated">创建于 2026-11-09 10:12</span>
+              </div>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-danger" type="button" data-review-result="reject">退回修改</button>
+              <button class="btn btn-success" type="button" data-review-result="pass"><svg class="icon icon-sm"><use href="#i-check"/></svg>审批通过</button>
+            </div>
+          </div>
+
+          <div class="detail-grid">
+            <div class="detail-main">
+              <section class="card section-card">
+                <div class="section-tabs">
+                  <button class="section-tab active" type="button">活动信息</button>
+                </div>
+                <div class="section-body">
+                  <div class="section-title"><span class="title-bar"></span>活动基础信息</div>
+                  <div class="info-table">
+                    <div class="info-row">
+                      <div class="info-key">活动名称</div>
+                      <div class="info-value" id="infoActivityName">贵阳拥抱大学-市直-出行申报-1109-A</div>
+                      <div class="info-key">研学范围</div>
+                      <div class="info-value" id="infoRange">区县内</div>
+                      <div class="info-key">学生费用</div>
+                      <div class="info-value" id="infoFee">元/人/次　50.00</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-key">活动主题</div>
+                      <div class="info-value" id="infoTheme">优秀传统文化</div>
+                      <div class="info-key">出行年级</div>
+                      <div class="info-value" id="infoGrade">小学一年级、小学二年级</div>
+                      <div class="info-key">出行方式</div>
+                      <div class="info-value">大巴</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-key">研学基地</div>
+                      <div class="info-value" id="infoBase">贵州拥抱大学研学教育基地</div>
+                      <div class="info-key">基地联系电话</div>
+                      <div class="info-value" id="infoContact">13658571574</div>
+                      <div class="info-key">报名人数</div>
+                      <div class="info-value emphasis">0人　查看</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-key">就餐形式</div>
+                      <div class="info-value">基地承担</div>
+                      <div class="info-key">活动时间</div>
+                      <div class="info-value" id="infoTime">2026-11-25 08:30 至 2026-11-26 17:30</div>
+                      <div class="info-key">贫困生数量</div>
+                      <div class="info-value">2人</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-key">老师人数</div>
+                      <div class="info-value" id="infoTeachers">15人</div>
+                      <div class="info-key">活动时长</div>
+                      <div class="info-value" id="infoDuration">2天</div>
+                      <div class="info-key">特殊儿童数</div>
+                      <div class="info-value">1人</div>
+                    </div>
+                    <div class="info-row">
+                      <div class="info-key">学生人数</div>
+                      <div class="info-value" id="infoStudents">20人</div>
+                      <div class="info-key">带队负责人</div>
+                      <div class="info-value" id="infoLeader">张老师</div>
+                      <div class="info-key">联系电话</div>
+                      <div class="info-value" id="infoPhone">183****5914</div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card section-card">
+                <div class="material-head">
+                  <div>
+                    <h2><svg class="icon" style="color:#1677ff"><use href="#i-book"/></svg>课程与出行方案</h2>
+                    <p>本次出行申报涉及的研学课程、往返出行方案及相关实施材料</p>
+                  </div>
+                  <span class="demo-pill">新增模块</span>
+                </div>
+                <div class="material-toolbar">
+                  <div class="chip-tabs" role="tablist" aria-label="课程与出行方案筛选">
+                    <button class="chip-tab active" type="button" data-material-tab="all">全部 <span class="chip-number">2</span></button>
+                    <button class="chip-tab" type="button" data-material-tab="course">研学课程 <span class="chip-number">1</span></button>
+                    <button class="chip-tab" type="button" data-material-tab="plan">出行方案 <span class="chip-number">1</span></button>
+                  </div>
+                  <span class="material-count">共 2 项材料</span>
+                </div>
+                <div class="table-wrap">
+                  <table class="course-table">
+                    <thead>
+                      <tr>
+                        <th style="width:210px">名称</th>
+                        <th style="width:70px">类别</th>
+                        <th style="width:104px">适合学段</th>
+                        <th style="width:76px">时长</th>
+                        <th style="width:108px">类型</th>
+                        <th style="width:78px">状态</th>
+                        <th style="width:126px">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="courseRows"></tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section class="card section-card">
+                <div class="section-tabs">
+                  <button class="section-tab active" type="button">活动人员信息</button>
+                </div>
+                <div class="section-body" style="padding-bottom:12px">
+                  <div class="section-title"><span class="title-bar"></span>活动人员信息</div>
+                </div>
+                <div class="person-tabs">
+                  <button class="person-tab active" type="button">贫困生名单（2）</button>
+                  <button class="person-tab" type="button">特殊儿童名单（1）</button>
+                  <button class="person-tab" type="button">活动领导小组</button>
+                  <button class="person-tab" type="button">安全领导小组</button>
+                  <button class="person-tab" type="button">安全工作小组</button>
+                </div>
+                <table class="person-table">
+                  <thead>
+                    <tr>
+                      <th>姓名</th>
+                      <th>性别</th>
+                      <th>年级</th>
+                      <th>班级</th>
+                      <th>身份证号</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>张小明</td><td>男</td><td>小学一年级</td><td>1班</td><td>522425199404074238</td></tr>
+                    <tr><td>李小红</td><td>女</td><td>小学二年级</td><td>2班</td><td>522425199404074238</td></tr>
+                  </tbody>
+                </table>
+              </section>
+
+              <section class="card section-card">
+                <div class="section-tabs">
+                  <button class="section-tab active" type="button">活动资料</button>
+                </div>
+                <div class="section-body">
+                  <div class="section-title"><span class="title-bar"></span>活动资料</div>
+                  <div class="document-list">
+                    <div class="document-row">
+                      <span class="file-type">PDF</span>
+                      <div class="file-meta">
+                        <div class="file-name">研学实践教育活动方案（贵阳一小_贵阳拥抱大学-市直-出行申报-1109-A）.pdf</div>
+                        <div class="file-size">2.4 MB · 2026-11-09 生成</div>
+                      </div>
+                      <button class="text-action" type="button" data-pdf-document="activity">下载 PDF</button>
+                    </div>
+                    <div class="document-row">
+                      <span class="file-type">PDF</span>
+                      <div class="file-meta">
+                        <div class="file-name">研学实践教育安全应急预案（贵阳一小_贵阳拥抱大学-市直-出行申报-1109-A）.pdf</div>
+                        <div class="file-size">1.8 MB · 2026-11-09 生成</div>
+                      </div>
+                      <button class="text-action" type="button" data-pdf-document="safety">下载 PDF</button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <aside class="detail-side">
+              <section class="card workflow-card">
+                <div class="workflow-top">
+                  <button class="btn btn-primary" type="button" data-pdf-document="receipt"><svg class="icon icon-sm"><use href="#i-download"/></svg>下载回执</button>
+                  <button class="btn" type="button"><svg class="icon icon-sm"><use href="#i-refresh"/></svg>重新生成</button>
+                </div>
+                <div class="workflow-body">
+                  <div class="workflow-heading"><span class="title-bar"></span>活动流程进度</div>
+                  <div class="timeline" id="workflowTimeline">
+                    <div class="timeline-item done">
+                      <span class="timeline-dot"></span>
+                      <div class="timeline-title">学校提交</div>
+                      <div class="timeline-meta">办理人：贵州拥抱大学研学教育基地管理员<br>状态：审批通过<br>2026-11-09 10:12:33</div>
+                    </div>
+                    <div class="timeline-item current" id="educationNode">
+                      <span class="timeline-dot"></span>
+                      <div class="timeline-title">市教育局管理员</div>
+                      <div class="timeline-meta">办理人：贵阳教育局<br>状态：待审核<br>当前节点</div>
+                    </div>
+                    <div class="timeline-item" id="trafficNode">
+                      <span class="timeline-dot"></span>
+                      <div class="timeline-title">交管大队</div>
+                      <div class="timeline-meta">办理人：贵阳市南明区交管大队<br>状态：等待中</div>
+                    </div>
+                    <div class="timeline-item" id="finishNode">
+                      <span class="timeline-dot"></span>
+                      <div class="timeline-title">结束</div>
+                      <div class="timeline-meta">审批完成后归档</div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card approval-card">
+                <h3>审核提示</h3>
+                <p>请重点核对申报涉及的课程内容、课程实施材料以及往返出行方案是否完整一致。</p>
+                <button class="btn btn-success" type="button" data-review-result="pass"><svg class="icon icon-sm"><use href="#i-check"/></svg>进入审核</button>
+              </section>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view base-detail-view" id="courseDetailView">
+          <div class="base-detail-toolbar">
+            <button class="back-link" id="backFromCourse" type="button"><svg class="icon icon-sm"><use href="#i-chevron-left"/></svg>返回活动明细</button>
+            <button class="btn" type="button" id="downloadCoursePdf"><svg class="icon icon-sm"><use href="#i-download"/></svg>下载 PDF</button>
+          </div>
+          <div id="courseDetailContent"></div>
+        </section>
+
+        <section class="view base-detail-view" id="planDetailView">
+          <div class="base-detail-toolbar">
+            <button class="back-link" id="backFromPlan" type="button"><svg class="icon icon-sm"><use href="#i-chevron-left"/></svg>返回活动明细</button>
+            <button class="btn" type="button" id="downloadPlanPdf"><svg class="icon icon-sm"><use href="#i-download"/></svg>下载 PDF</button>
+          </div>
+          <div id="planDetailContent"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog class="review-dialog" id="reviewDialog">
+    <div class="dialog-head">
+      <div>
+        <h2>市教育局审核</h2>
+        <p>贵阳拥抱大学-市直-出行申报-1109-A</p>
+      </div>
+      <button class="close-button" type="button" data-close-dialog="reviewDialog" aria-label="关闭"><svg class="icon"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="dialog-body">
+      <div class="review-choice">
+        <label class="choice-card"><input type="radio" name="reviewResult" value="pass" checked />审批通过</label>
+        <label class="choice-card"><input type="radio" name="reviewResult" value="reject" />退回修改</label>
+      </div>
+      <label class="review-label" for="reviewComment">审核意见</label>
+      <textarea class="review-textarea" id="reviewComment" placeholder="请输入审核意见">课程及出行方案材料完整，同意出行。</textarea>
+      <div class="review-help">提交后将流转至交管大队审批，并同步更新活动详情中的流程进度。</div>
+    </div>
+    <div class="dialog-foot">
+      <button class="btn" type="button" data-close-dialog="reviewDialog">取消</button>
+      <button class="btn btn-success" type="button" id="submitReview">提交审核</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg class="icon"><use href="#i-check"/></svg>
+    <span id="toastText"></span>
+  </div>
+
+  <section class="print-sheet" id="printSheet"></section>
+
+  <script src="./education-travel-review.js"></script>
+</body>
+</html>
